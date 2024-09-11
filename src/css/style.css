@@ -1,0 +1,26 @@
+body {
+    font-family: Arial, sans-serif;
+}
+
+.question-container {
+    margin-bottom: 20px;
+}
+
+.answered {
+    background-color: #f8f9fa;
+}
+
+.current {
+    border: 2px solid #007bff;
+}
+
+.question-summary {
+    cursor: pointer;
+}
+
+pre {
+    background-color: #f4f4f4;
+    padding: 10px;
+    border-radius: 5px;
+    overflow-x: auto;
+}

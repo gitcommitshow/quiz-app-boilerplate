@@ -1,0 +1,23 @@
+{
+  "name": "quiz-app",
+  "version": "1.0.0",
+  "description": "Interactive Data Engineering Quiz",
+  "main": "index.html",
+  "scripts": {
+    "start": "gulp",
+    "build": "gulp build"
+  },
+  "keywords": [
+    "data",
+    "engineering",
+    "quiz",
+    "interactive"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "devDependencies": {
+    "browser-sync": "^2.26.2",
+    "gulp": "^5.0.0",
+    "gulp-clean": "^0.4.0"
+  }
+}

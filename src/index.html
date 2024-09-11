@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive SQL Quiz</title>
+    <!-- Bootstrap CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="mb-4">Practice Data Engineering Skills</h1>
+        <div id="quiz-container"></div>
+        <div id="hint-count" class="mt-3"></div>
+        <div id="quiz-progress" class="mt-3"></div>
+        <button id="restart-quiz" class="btn btn-warning mt-3" onclick="handleRestartQuiz()">Restart Quiz</button>
+    </div>
+
+    <!-- Bootstrap JS (optional, but needed for some Bootstrap features) -->
+    <script src="js/bootstrap.bundle.min.js"></script>
+
+    <script type="module">
+        import { Quiz } from './js/quiz.js';
+
+        const quiz = new Quiz();
+        let currentQuestion;
+
+        function renderQuestion(question, userAnswer = null, isCurrent = false) {
+            let questionHtml = `
+                <div class="question-container card mb-3 ${isCurrent ? 'current' : userAnswer ? 'answered' : ''}" id="question-container-${question.id}">
+                    <div class="card-header question-summary" data-bs-toggle="collapse" data-bs-target="#question-content-${question.id}">
+                        <h3 class="mb-0">Question ${question.id}</h3>
+                    </div>
+                    <div id="question-content-${question.id}" class="collapse ${isCurrent ? 'show' : ''} question-content card-body">
+                        <p class="card-text">${question.question}</p>
+                        <div class="answer-container mb-3">
+            `;
+
+            if (question.type === 'objective') {
+                questionHtml += question.options.map((option, index) => `
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" id="option-${question.id}-${index}" 
+                            name="answer-${question.id}" value="${option}"
+                            ${userAnswer && userAnswer.answer === option ? 'checked' : ''}
+                            ${!isCurrent && userAnswer ? 'disabled' : ''}>
+                        <label class="form-check-label" for="option-${question.id}-${index}">${option}</label>
+                    </div>
+                `).join('');
+            } else {
+                questionHtml += `<textarea class="form-control" id="subjective-answer-${question.id}" rows="6" 
+                    ${!isCurrent && userAnswer ? 'disabled' : ''}>${userAnswer ? userAnswer.answer : ''}</textarea>`;
+            }
+
+            questionHtml += `
+                        </div>
+            `;
+
+            if (isCurrent) {
+                questionHtml += `
+                    <button class="btn btn-primary submit-btn" onclick="handleSubmit(${question.id})">Submit</button>
+                    <button class="btn btn-secondary hint-btn" onclick="showHint(${question.id}, 0)">Hint 1</button>
+                    <button class="btn btn-secondary hint-btn" onclick="showHint(${question.id}, 1)">Hint 2</button>
+                `;
+            }
+
+            questionHtml += `
+                        <p class="hint d-none mt-2" id="hint-${question.id}-0">${question.hints[0]}</p>
+                        <p class="hint d-none mt-2" id="hint-${question.id}-1">${question.hints[1]}</p>
+            `;
+
+            if (userAnswer) {
+                questionHtml += `
+                    <p class="feedback mt-3 ${userAnswer.isCorrect ? 'text-success' : 'text-danger'}">
+                        ${userAnswer.isCorrect ? 'Correct!' : 'Incorrect. Try again!'}
+                    </p>
+                `;
+            }
+
+            questionHtml += `
+                    </div>
+                </div>
+            `;
+
+            return questionHtml;
+        }
+
+        async function renderQuiz() {
+            const quizContainer = document.getElementById('quiz-container');
+            quizContainer.innerHTML = ''; // Clear existing content
+
+            const currentQuestion = quiz.getCurrentQuestion();
+            const answeredQuestions = quiz.getAnsweredQuestions().reverse(); // Most recent first
+
+            // Render current question if exists
+            if (currentQuestion) {
+                const userAnswer = await quiz.getUserAnswer(currentQuestion.id);
+                quizContainer.insertAdjacentHTML('afterbegin', renderQuestion(currentQuestion, userAnswer, true));
+            }
+
+            // Render answered questions
+            for (const answeredQuestion of answeredQuestions) {
+                if(currentQuestion && currentQuestion.id === answeredQuestion.id){
+                    continue;
+                }
+                const userAnswer = await quiz.getUserAnswer(answeredQuestion.id);
+                quizContainer.insertAdjacentHTML('beforeend', renderQuestion(answeredQuestion, userAnswer));
+            }
+
+            updateQuizProgress();
+        }
+
+        async function initializeQuiz() {
+            await quiz.init();
+            await renderQuiz();
+            updateHintCount(quiz.getHintCount());
+        }
+
+        async function handleSubmit(questionId) {
+            const questionContainer = document.getElementById(`question-container-${questionId}`);
+            let userAnswer;
+            const currentQuestion = quiz.getCurrentQuestion();
+            
+            if (currentQuestion.type === 'objective') {
+                const selectedOption = questionContainer.querySelector(`input[name="answer-${questionId}"]:checked`);
+                userAnswer = selectedOption ? selectedOption.value : '';
+            } else {
+                userAnswer = questionContainer.querySelector(`#subjective-answer-${questionId}`).value;
+            }
+
+            const isCorrect = await quiz.submitAnswer(userAnswer);
+
+            if (isCorrect) {
+                if (quiz.hasNextQuestion()) {
+                    quiz.moveToNextQuestion();
+                }
+            }
+
+            await renderQuiz();
+        }
+
+        function showHint(questionId, hintIndex) {
+            document.getElementById(`hint-${questionId}-${hintIndex}`).classList.remove('d-none');
+            const newHintCount = quiz.incrementHintCount();
+            updateHintCount(newHintCount);
+        }
+
+        function updateHintCount(count) {
+            document.getElementById('hint-count').textContent = `Total hints used: ${count}`;
+        }
+
+        function updateQuizProgress() {
+            const progress = quiz.getQuizProgress();
+            document.getElementById('quiz-progress').textContent = 
+                `Question ${progress.currentQuestionIndex + 1} of ${progress.totalQuestions} | ` +
+                `Correct: ${progress.correctAnswers} | ` +
+                `Answered: ${progress.answeredQuestions}`;
+        }
+
+        // Define handleRestartQuiz in the global scope
+        window.handleRestartQuiz = async function() {
+            await quiz.restart();
+            await renderQuiz();
+            updateHintCount(quiz.getHintCount());
+            updateQuizProgress();
+        }
+
+        // Initialize the quiz
+        initializeQuiz();
+
+        // Expose functions to window object
+        window.handleSubmit = handleSubmit;
+        window.showHint = showHint;
+    </script>
+</body>
+</html>

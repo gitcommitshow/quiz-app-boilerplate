@@ -1,0 +1,45 @@
+[
+    {
+      "id": 1,
+      "version": 2,
+      "type": "objective",
+      "question": "Which SQL clause is used to filter rows in a SELECT statement?",
+      "options": [
+        "WHERE",
+        "HAVING",
+        "GROUP BY",
+        "ORDER BY"
+      ],
+      "answer": "WHERE",
+      "hints": [
+        "This clause is used before any grouping operations.",
+        "It's typically placed after the FROM clause in a SELECT statement."
+      ]
+    },
+    {
+      "id": 2,
+      "version": 1,
+      "type": "subjective",
+      "question": "Create a SQL query to find the average salary for each department, but only include departments with more than 5 employees. Order the results by the average salary in descending order.",
+      "keywords": ["SELECT", "AVG", "salary", "FROM", "employees", "GROUP BY", "department", "HAVING", "COUNT", "ORDER BY", "DESC"],
+      "minKeywords": 6,
+      "maxLength": 500,
+      "hints": [
+        "Use GROUP BY to group by department.",
+        "HAVING is used to filter grouped results."
+      ]
+    },
+    {
+      "id": 3,
+      "version": 1,
+      "type": "subjective",
+      "question": "Write a query to select the top 5 customers who have made the most orders. Include the customer name and the total number of orders they've made.",
+      "keywords": ["SELECT", "customer_name", "COUNT", "orders", "JOIN", "customers", "GROUP BY", "ORDER BY", "DESC", "LIMIT"],
+      "minKeywords": 7,
+      "maxLength": 600,
+      "hints": [
+        "Join the customers and orders tables.",
+        "Use COUNT and GROUP BY to get the total orders per customer."
+      ]
+    }
+  ]
