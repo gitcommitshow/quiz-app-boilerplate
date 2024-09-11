@@ -13,7 +13,7 @@ const paths = {
 };
 
 // Task to serve the files with BrowserSync
-function serve(done) {
+function serveDev(done) {
   browserSync.init({
     server: {
       baseDir: './src',  // Serve files from the 'src' folder during development
@@ -22,11 +22,12 @@ function serve(done) {
   done();
 }
 
-function serveBuild(done) {
+function serveProd(done) {
     browserSync.init({
       server: {
         baseDir: './build',  // Serve files from the 'src' folder during development
       },
+      open: false
     });
     done();
   }
@@ -74,11 +75,13 @@ function buildData() {
   }
 
 // Build task: Clean the build folder, then copy and process HTML, CSS, and JS
-const build = gulp.series(cleanBuild, gulp.parallel(copyHTML, buildCSS, buildJS, buildData), serveBuild);
+const buildTask = gulp.series(cleanBuild, gulp.parallel(copyHTML, buildCSS, buildJS, buildData));
 
 // Default task: Serve files with BrowserSync and watch for changes
-const defaultTask = gulp.series(serve, watchFiles);
+const serveDevTask = gulp.series(serveDev, watchFiles);
+const serveProdTask = gulp.series(serveProd, watchFiles);
 
 // Export tasks
-exports.default = defaultTask;
-exports.build = build;
+exports.default = serveDevTask;
+exports.build = buildTask;
+exports.serve = serveProdTask;

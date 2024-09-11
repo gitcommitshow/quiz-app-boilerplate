@@ -4,8 +4,9 @@
   "description": "Interactive Data Engineering Quiz",
   "main": "index.html",
   "scripts": {
-    "start": "gulp",
-    "build": "gulp build"
+    "dev": "gulp",
+    "build": "gulp build",
+    "start": "npm run build && gulp serve"
   },
   "keywords": [
     "data",
