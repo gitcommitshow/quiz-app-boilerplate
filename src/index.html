@@ -49,7 +49,7 @@
                     </div>
                 `).join('');
             } else {
-                questionHtml += `<textarea class="form-control" id="subjective-answer-${question.id}" rows="6" 
+                questionHtml += `<textarea class="form-control ${userAnswer && !userAnswer.isCorrect ? 'is-invalid' : ''}" id="subjective-answer-${question.id}" rows="6" 
                     ${!isCurrent && userAnswer ? 'disabled' : ''}>${userAnswer ? userAnswer.answer : ''}</textarea>`;
             }
 
@@ -71,11 +71,23 @@
             `;
 
             if (userAnswer) {
-                questionHtml += `
-                    <p class="feedback mt-3 ${userAnswer.isCorrect ? 'text-success' : 'text-danger'}">
-                        ${userAnswer.isCorrect ? 'Correct!' : 'Incorrect. Try again!'}
-                    </p>
-                `;
+                if (question.type === 'objective') {
+                    questionHtml += `
+                        <div class="feedback mt-3">
+                            ${!userAnswer.isCorrect ? '<div class="invalid-feedback d-block">Incorrect. Please try again.</div>' : ''}
+                            ${userAnswer.isCorrect ? '<p class="text-success">Correct!</p>' : ''}
+                        </div>
+                    `;
+                } else {
+                    questionHtml += `
+                        <div class="feedback mt-3">
+                            ${!userAnswer.isCorrect ? '<div class="invalid-feedback d-block">Incorrect. Please try again.</div>' : ''}
+                            ${userAnswer.isCorrect && userAnswer.grade !== undefined ? `<strong>Grade:</strong> ${userAnswer.grade}/10<br>` : ''}
+                            ${!isCurrent && userAnswer.fullEvaluation ? `<strong>Feedback:</strong> ${userAnswer.fullEvaluation}<br>` : ''}
+                            ${userAnswer.nextHint ? `<strong>Suggestion:</strong> ${userAnswer.nextHint}` : ''}
+                        </div>
+                    `;
+                }
             }
 
             questionHtml += `
@@ -129,12 +141,29 @@
                 userAnswer = questionContainer.querySelector(`#subjective-answer-${questionId}`).value;
             }
 
-            const isCorrect = await quiz.submitAnswer(userAnswer);
+            const { isCorrect, grade, nextHint, fullEvaluation, confidenceScore } = await quiz.submitAnswer(userAnswer);
 
-            if (isCorrect) {
+            const answerInput = currentQuestion.type === 'objective' 
+                ? questionContainer.querySelector('.answer-container')
+                : questionContainer.querySelector(`#subjective-answer-${questionId}`);
+
+            if (isCorrect && confidenceScore >= 0.5) {
+                answerInput.classList.remove('is-invalid');
                 if (quiz.hasNextQuestion()) {
                     quiz.moveToNextQuestion();
                 }
+            } else {
+                answerInput.classList.add('is-invalid');
+            }
+
+            const feedbackElement = questionContainer.querySelector('.feedback');
+            if (feedbackElement) {
+                feedbackElement.innerHTML = `
+                    ${!isCorrect ? '<div class="invalid-feedback d-block">Incorrect. Please try again.</div>' : ''}
+                    ${isCorrect && grade !== undefined ? `<strong>Grade:</strong> ${grade}/10<br>` : ''}
+                    ${nextHint ? `<strong>Suggestion:</strong> ${nextHint}` : ''}
+                `;
+                feedbackElement.classList.remove('d-none');
             }
 
             await renderQuiz();

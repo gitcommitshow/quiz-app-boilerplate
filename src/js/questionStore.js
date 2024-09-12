@@ -150,9 +150,9 @@ class QuestionStore {
      * @example
      * await questionStore.updateUserAnswer(3, "A unique identifier for a record", true);
      */
-    async updateUserAnswer(questionId, answer, isCorrect) {
+    async updateUserAnswer(questionId, answer, isCorrect, grade, nextHint, fullEvaluation) {
         return this._performTransaction(this.userAnswersStoreName, 'readwrite', store => 
-            store.put({ questionId, answer, isCorrect })
+            store.put({ questionId, answer, isCorrect, grade, nextHint, fullEvaluation })
         );
     }
 

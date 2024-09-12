@@ -1,0 +1,17 @@
+{
+  "name": "quiz-api",
+  "version": "1.0.0",
+  "description": "Quiz API server to evaluate, generate, and manage question answers",
+  "main": "app.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.21.0",
+    "openai": "^4.59.0"
+  }
+}

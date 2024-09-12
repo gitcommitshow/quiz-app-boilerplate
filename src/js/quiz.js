@@ -1,6 +1,6 @@
 import questionStore from './questionStore.js';
 
-const DEFAULT_API_EVALUATE_ANSWER = 'http://localhost:3000/evaluate';
+const DEFAULT_ANSWER_EVALUATION_API = 'http://localhost:8000/evaluate';
 
 /**
  * Represents a Quiz with questions, user answers, and evaluation functionality.
@@ -17,14 +17,14 @@ const DEFAULT_API_EVALUATE_ANSWER = 'http://localhost:3000/evaluate';
 export class Quiz {
     /**
      * Creates a new Quiz instance.
-     * @param {string} [apiEvaluateAnswer=DEFAULT_API_EVALUATE_ANSWER] - The API endpoint for evaluating subjective answers.
+     * @param {string} [answerEvaluationApi=DEFAULT_ANSWER_EVALUATION_API] - The API endpoint for evaluating subjective answers.
      */
-    constructor(apiEvaluateAnswer = DEFAULT_API_EVALUATE_ANSWER) {
+    constructor(answerEvaluationApi = DEFAULT_ANSWER_EVALUATION_API) {
         this.questions = [];
         this.userAnswers = new Map();
         this.currentQuestionIndex = 0;
         this.hintCount = parseInt(localStorage.getItem('hintCount')) || 0;
-        this.apiEvaluateAnswer = apiEvaluateAnswer;
+        this.answerEvaluationApi = answerEvaluationApi;
     }
 
     /**
@@ -110,24 +110,39 @@ export class Quiz {
      * @async
      * @param {string} userAnswer - The user's answer to the question.
      * @param {number} [questionId] - Optional. The ID of the specific question to answer.
-     * @returns {Promise<boolean>} Whether the answer is correct.
+     * @returns {Promise<Object>} The evaluation result.
+     * @example
+     * const evaluation = await quiz.submitAnswer('User's answer');
+     * console.log(evaluation);
+     * // Output:
+     * // {
+     * //     isCorrect: true,
+     * //     grade: 10,
+     * //     nextHint: 'Next hint',
+     * //     fullEvaluation: 'Full evaluation',
+     * //     confidenceScore: 0.5  
+     * // }
      */
     async submitAnswer(userAnswer, questionId) {
         const question = questionId ? this.questions.find(q => q.id === questionId) : this.getCurrentQuestion();
         if (!question) {
             throw new Error('Question not found');
         }
-        const isCorrect = await this.checkAnswer(question, userAnswer);
+        const { isCorrect, grade, nextHint, fullEvaluation, confidenceScore } = await this.checkAnswer(question, userAnswer);
         
         this.userAnswers.set(question.id, {
             answer: userAnswer,
-            isCorrect: isCorrect
+            isCorrect: isCorrect,
+            grade: grade,
+            nextHint: nextHint,
+            fullEvaluation: fullEvaluation,
+            confidenceScore: confidenceScore
         });
 
         // Save user answer to IndexedDB
-        await questionStore.updateUserAnswer(question.id, userAnswer, isCorrect);
+        await questionStore.updateUserAnswer(question.id, userAnswer, isCorrect, grade, nextHint, fullEvaluation, confidenceScore);
 
-        return isCorrect;
+        return { isCorrect, grade, nextHint, fullEvaluation, confidenceScore };
     }
 
     /**
@@ -135,16 +150,16 @@ export class Quiz {
      * @async
      * @param {Object} question - The question object.
      * @param {string} userAnswer - The user's answer.
-     * @returns {Promise<boolean>} Whether the answer is correct.
+     * @returns {Promise<Object>} The evaluation result.
      */
     async checkAnswer(question, userAnswer) {
         if (question.type === 'objective') {
             const correctAnswer = question.answer.toLowerCase();
-            return userAnswer.trim().toLowerCase() === correctAnswer;
+            return { isCorrect: userAnswer.trim().toLowerCase() === correctAnswer, confidenceScore: 1 };
         } else if (question.type === 'subjective') {
             return await this.evaluateSubjectiveAnswer(question, userAnswer);
         }
-        return false;
+        return { isCorrect: false, confidenceScore: 0 };
     }
 
     /**
@@ -152,17 +167,28 @@ export class Quiz {
      * @async
      * @param {Object} question - The question object.
      * @param {string} userAnswer - The user's answer.
-     * @returns {Promise<boolean>} Whether the answer is correct.
+     * @returns {Promise<Object>} The evaluation result.
+     * @example
+     * const evaluation = await quiz.evaluateSubjectiveAnswer(question, userAnswer);
+     * console.log(evaluation);
+     * // Output:
+     * // {
+     * //     isCorrect: true,
+     * //     grade: 10,
+     * //     nextHint: 'Next hint',
+     * //     fullEvaluation: 'Full evaluation',
+     * //     confidenceScore: 0.5
+     * // }
      */
     async evaluateSubjectiveAnswer(question, userAnswer) {
         try {
-            const response = await fetch(this.apiEvaluateAnswer, {
+            const response = await fetch(this.answerEvaluationApi, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    questionId: question.id,
+                    question: question.question,
                     answer: userAnswer,
                 }),
             });
@@ -172,7 +198,7 @@ export class Quiz {
             }
 
             const result = await response.json();
-            return result.isCorrect;
+            return { isCorrect: result.isCorrect, grade: result.grade, nextHint: result.nextHint, fullEvaluation: result.fullEvaluation };
         } catch (error) {
             console.error('Error evaluating subjective answer:', error);
             // Fallback to local evaluation if API call fails
@@ -199,7 +225,7 @@ export class Quiz {
             userAnswer.toLowerCase().includes(keyword.toLowerCase())
         );
 
-        return matchedKeywords.length >= minKeywords;
+        return { isCorrect: matchedKeywords.length >= minKeywords, confidenceScore: (matchedKeywords.length / (2*keywords.length)) };
     }
 
     /**
