@@ -44,10 +44,10 @@ export class Question {
         return json;
     }
 
-    async getLatestUserAnswer() {
-        const userAnswers = await UserAnswer.getAllAnswersByQuestionId(this.id);
-        return userAnswers.length > 0 ? userAnswers[userAnswers.length - 1] : null;
-    }
+    // async getLatestUserAnswer() {
+    //     const userAnswers = await UserAnswer.getAllAnswersByQuestionId(this.id);
+    //     return userAnswers.length > 0 ? userAnswers[userAnswers.length - 1] : null;
+    // }
 
     static fromJSON(json) {
         return new Question(json);
