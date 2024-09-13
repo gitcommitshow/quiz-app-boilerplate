@@ -9,6 +9,7 @@ const paths = {
   css: './src/css/*.css',
   js: './src/js/*.js',
   data: './src/data/*.json',
+  images: './src/images/*',
   build: './build/',
 };
 
@@ -72,10 +73,15 @@ function buildJS() {
 function buildData() {
     return gulp.src(paths.data)
       .pipe(gulp.dest(paths.build + 'data'));
-  }
+}
+
+function buildImages() {
+    return gulp.src(paths.images)
+      .pipe(gulp.dest(paths.build + 'images'));
+}
 
 // Build task: Clean the build folder, then copy and process HTML, CSS, and JS
-const buildTask = gulp.series(cleanBuild, gulp.parallel(copyHTML, buildCSS, buildJS, buildData));
+const buildTask = gulp.series(cleanBuild, gulp.parallel(copyHTML, buildCSS, buildJS, buildData, buildImages));
 
 // Default task: Serve files with BrowserSync and watch for changes
 const serveDevTask = gulp.series(serveDev, watchFiles);
