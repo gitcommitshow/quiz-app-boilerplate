@@ -1,28 +1,46 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-100">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interactive SQL Quiz</title>
+    <title>Data Engineering Challenge</title>
     <!-- Bootstrap CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="css/style.css">
 </head>
-<body>
-    <div class="container mt-5">
-        <h1 class="mb-4">Practice Data Engineering Skills</h1>
-        <div id="quiz-container"></div>
-        <div id="hint-count" class="mt-3"></div>
-        <div id="quiz-progress" class="mt-3"></div>
-        <button id="restart-quiz" class="btn btn-warning mt-3" onclick="handleRestartQuiz()">Restart Quiz</button>
-    </div>
+<body class="d-flex flex-column h-100">
+    <main class="flex-shrink-0">
+        <div class="container mt-5">
+            <h1 class="mb-4 text-center">🎯 Data Engineering Challenge</h1>
+            <p class="mb-4 text-center">Practice data engineering skills with AI-powered hints and grading</p>
+            <br/><br/><br/>
+            <div id="quiz-container"></div>
+        </div>
+    </main>
+    <br/><br/>
+    <footer class="footer mt-auto py-3 bg-light">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="text-center">
+                    <p class="mb-0">Sponsored by<br/>
+                        <a href="https://www.rudderstack.com" target="_blank"><img src="images/sponsor-logo.png" alt="Sponsor Logo" height="30" class="ms-2"></a>
+                    </p>
+                </div>
+                <br/><br/><br/><br/><br/><br/>
+                <div class="text-center">
+                    <p class="mb-0">&copy; 2024. All rights reserved.</p>
+                </div>
+                <br/><br/>
+            </div>
+        </div>
+    </footer>
 
     <!-- Bootstrap JS (optional, but needed for some Bootstrap features) -->
     <script src="js/bootstrap.bundle.min.js"></script>
 
     <script type="module">
-        import { Quiz } from './js/quiz.js';
+        import { Quiz } from './js/Quiz.js';
 
         const quiz = new Quiz();
         let currentQuestion;
@@ -44,20 +62,20 @@
                         <input class="form-check-input" type="radio" id="option-${question.id}-${index}" 
                             name="answer-${question.id}" value="${option}"
                             ${userAnswer && userAnswer.answer === option ? 'checked' : ''}
-                            ${!isCurrent && userAnswer ? 'disabled' : ''}>
+                            ${!isCurrent ? 'disabled' : ''}>
                         <label class="form-check-label" for="option-${question.id}-${index}">${option}</label>
                     </div>
                 `).join('');
             } else {
-                questionHtml += `<textarea class="form-control ${userAnswer && !userAnswer.isCorrect ? 'is-invalid' : ''}" id="subjective-answer-${question.id}" rows="6" 
-                    ${!isCurrent && userAnswer ? 'disabled' : ''}>${userAnswer ? userAnswer.answer : ''}</textarea>`;
+                questionHtml += `<textarea class="form-control ${isCurrent && userAnswer && !userAnswer.isCorrect ? 'is-invalid' : ''}" id="subjective-answer-${question.id}" rows="6" 
+                    ${!isCurrent ? 'disabled' : ''}>${userAnswer ? userAnswer.answer : ''}</textarea>`;
             }
 
             questionHtml += `
                         </div>
             `;
 
-            if (isCurrent) {
+            if (isCurrent && !quiz.isQuizCompleted()) {
                 questionHtml += `
                     <button class="btn btn-primary submit-btn" onclick="handleSubmit(${question.id})">Submit</button>
                     <button class="btn btn-secondary hint-btn" onclick="showHint(${question.id}, 0)">Hint 1</button>
@@ -66,31 +84,34 @@
             }
 
             questionHtml += `
-                        <p class="hint d-none mt-2" id="hint-${question.id}-0">${question.hints[0]}</p>
-                        <p class="hint d-none mt-2" id="hint-${question.id}-1">${question.hints[1]}</p>
+                        <p class="hint d-none mt-2" id="hint-${question.id}-0">💡 ${question.hints[0]}</p>
+                        <p class="hint d-none mt-2" id="hint-${question.id}-1">💡${question.hints[1]}</p>
             `;
 
             if (userAnswer) {
-                if (question.type === 'objective') {
+                questionHtml += `
+                    <div class="feedback mt-3">
+                        ${userAnswer.isCorrect 
+                            ? `<p class="text-success"><strong>Correct!</strong>${userAnswer.grade !== undefined ? ` Grade: ${userAnswer.grade}/10` : ''}</p>` 
+                            : '<p class="text-danger"><strong>Incorrect</strong></p>'}
+                        ${(!isCurrent || userAnswer.isCorrect) && userAnswer.fullEvaluation ? `
+                            <div class="full-evaluation mt-2">
+                                <strong>Evaluation:</strong><br>
+                                ${userAnswer.fullEvaluation}
+                            </div>
+                        ` : ''}
+                        ${isCurrent && !userAnswer.isCorrect && userAnswer.nextHint ? `<strong>AI Suggestion:</strong> ${userAnswer.nextHint}` : ''}
+                    </div>
+                `;
+                if (isCurrent && userAnswer.isCorrect && quiz.hasNextQuestion()) {
                     questionHtml += `
-                        <div class="feedback mt-3">
-                            ${!userAnswer.isCorrect ? '<div class="invalid-feedback d-block">Incorrect. Please try again.</div>' : ''}
-                            ${userAnswer.isCorrect ? '<p class="text-success">Correct!</p>' : ''}
-                        </div>
-                    `;
-                } else {
-                    questionHtml += `
-                        <div class="feedback mt-3">
-                            ${!userAnswer.isCorrect ? '<div class="invalid-feedback d-block">Incorrect. Please try again.</div>' : ''}
-                            ${userAnswer.isCorrect && userAnswer.grade !== undefined ? `<strong>Grade:</strong> ${userAnswer.grade}/10<br>` : ''}
-                            ${!isCurrent && userAnswer.fullEvaluation ? `<strong>Feedback:</strong> ${userAnswer.fullEvaluation}<br>` : ''}
-                            ${userAnswer.nextHint ? `<strong>Suggestion:</strong> ${userAnswer.nextHint}` : ''}
-                        </div>
+                        <button class="btn btn-primary mt-3" onclick="moveToNextQuestion()">Next Question</button>
                     `;
                 }
             }
 
             questionHtml += `
+                        </div>
                     </div>
                 </div>
             `;
@@ -98,35 +119,76 @@
             return questionHtml;
         }
 
+        // Add this function to handle moving to the next question
+        function moveToNextQuestion() {
+            if (quiz.moveToNextQuestion()) {
+                renderQuiz();
+            } else if (quiz.isQuizCompleted()) {
+                showQuizCompletion();
+            }
+        }
+
         async function renderQuiz() {
+            console.log('Rendering quiz');
             const quizContainer = document.getElementById('quiz-container');
             quizContainer.innerHTML = ''; // Clear existing content
 
-            const currentQuestion = quiz.getCurrentQuestion();
-            const answeredQuestions = quiz.getAnsweredQuestions().reverse(); // Most recent first
-
-            // Render current question if exists
-            if (currentQuestion) {
-                const userAnswer = await quiz.getUserAnswer(currentQuestion.id);
-                quizContainer.insertAdjacentHTML('afterbegin', renderQuestion(currentQuestion, userAnswer, true));
-            }
-
-            // Render answered questions
-            for (const answeredQuestion of answeredQuestions) {
-                if(currentQuestion && currentQuestion.id === answeredQuestion.id){
-                    continue;
+            if (quiz.isQuizCompleted()) {
+                quizContainer.insertAdjacentHTML('beforeend', showQuizCompletion());
+            } else {
+                // Add progress stats and buttons at the top
+                quizContainer.insertAdjacentHTML('afterbegin', `
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div id="quiz-progress" class="text-start"></div>
+                        <div>
+                            <button class="btn btn-sm btn-danger finish-btn" onclick="handleFinishQuiz()">Finish Quiz</button>
+                        </div>
+                    </div>
+                `);
+                currentQuestion = quiz.getCurrentQuestion();
+                if (currentQuestion) {
+                    const userAnswer = quiz.getLatestUserAnswer(currentQuestion.id);
+                    console.log('Rendering current question:', { id: currentQuestion.id, userAnswer });
+                    quizContainer.insertAdjacentHTML('beforeend', await renderQuestion(currentQuestion, userAnswer, true));
                 }
-                const userAnswer = await quiz.getUserAnswer(answeredQuestion.id);
-                quizContainer.insertAdjacentHTML('beforeend', renderQuestion(answeredQuestion, userAnswer));
+            }
+            const answeredQuestions = quiz.getAnsweredQuestions().reverse();
+            for (const question of answeredQuestions) {
+                if (quiz.isQuizCompleted() || question.id !== currentQuestion?.id) {
+                    const userAnswer = quiz.getLatestUserAnswer(question.id);
+                    console.log('Rendering answered question:', { id: question.id, userAnswer });
+                    quizContainer.insertAdjacentHTML('beforeend', await renderQuestion(question, userAnswer, false));
+                }
             }
 
             updateQuizProgress();
         }
 
+        function showQuizCompletion() {
+            const quizProgress = quiz.getQuizProgress();
+            return `
+                <div class="quiz-completion text-center mb-5 p-4 bg-light rounded">
+                    <h1 class="display-4 mb-4">Congratulations!</h1>
+                    <p class="lead">You've completed the quiz!</p>
+                    <h2 class="display-1 mb-4 font-weight-bold">${isNaN(quizProgress.overallScore) ? 0 : quizProgress.overallScore}%</h2>
+                    <p class="lead">Your score: ${quizProgress.totalScore.toFixed(2)} out of ${quizProgress.maxPossibleScore}</p>
+                    <p class="lead">Questions answered: ${quizProgress.answeredQuestions} out of ${quizProgress.totalQuestions}</p>
+                    <p class="lead">Correct answers: ${quizProgress.correctAnswers} out of ${quizProgress.answeredQuestions}</p>
+                    <p class="lead">Hints used: ${quizProgress.hintCount}</p>
+                    <button class="btn btn-primary btn-lg mt-4" onclick="handleRestartQuiz()">Restart Quiz</button>
+                </div>
+            `;
+        }
+
+        async function handleRestartQuiz() {
+            console.log('Restarting quiz');
+            await quiz.restart();
+            await renderQuiz();
+        }
+
         async function initializeQuiz() {
             await quiz.init();
             await renderQuiz();
-            updateHintCount(quiz.getHintCount());
         }
 
         async function handleSubmit(questionId) {
@@ -141,66 +203,44 @@
                 userAnswer = questionContainer.querySelector(`#subjective-answer-${questionId}`).value;
             }
 
-            const { isCorrect, grade, nextHint, fullEvaluation, confidenceScore } = await quiz.submitAnswer(userAnswer);
+            const { isCorrect, grade, nextHint, fullEvaluation, confidenceScore } = await quiz.submitAnswer(userAnswer, questionId);
 
-            const answerInput = currentQuestion.type === 'objective' 
-                ? questionContainer.querySelector('.answer-container')
-                : questionContainer.querySelector(`#subjective-answer-${questionId}`);
+            await renderQuiz();
+        }
 
-            if (isCorrect && confidenceScore >= 0.5) {
-                answerInput.classList.remove('is-invalid');
-                if (quiz.hasNextQuestion()) {
-                    quiz.moveToNextQuestion();
-                }
-            } else {
-                answerInput.classList.add('is-invalid');
+        // Add this new function to handle finishing the quiz
+        async function handleFinishQuiz() {
+            if (!quiz.isQuizCompleted()) {
+                quiz.completeQuiz(); // Add this method to the Quiz class
             }
-
-            const feedbackElement = questionContainer.querySelector('.feedback');
-            if (feedbackElement) {
-                feedbackElement.innerHTML = `
-                    ${!isCorrect ? '<div class="invalid-feedback d-block">Incorrect. Please try again.</div>' : ''}
-                    ${isCorrect && grade !== undefined ? `<strong>Grade:</strong> ${grade}/10<br>` : ''}
-                    ${nextHint ? `<strong>Suggestion:</strong> ${nextHint}` : ''}
-                `;
-                feedbackElement.classList.remove('d-none');
-            }
-
             await renderQuiz();
         }
 
         function showHint(questionId, hintIndex) {
             document.getElementById(`hint-${questionId}-${hintIndex}`).classList.remove('d-none');
-            const newHintCount = quiz.incrementHintCount();
-            updateHintCount(newHintCount);
-        }
-
-        function updateHintCount(count) {
-            document.getElementById('hint-count').textContent = `Total hints used: ${count}`;
+            quiz.incrementHintCount();
+            updateQuizProgress();
         }
 
         function updateQuizProgress() {
             const progress = quiz.getQuizProgress();
-            document.getElementById('quiz-progress').textContent = 
-                `Question ${progress.currentQuestionIndex + 1} of ${progress.totalQuestions} | ` +
-                `Correct: ${progress.correctAnswers} | ` +
-                `Answered: ${progress.answeredQuestions}`;
+            const progressElement = document.getElementById('quiz-progress');
+            if (progressElement) {
+                progressElement.textContent = 
+                    `✔️ ${progress.correctAnswers}/${progress.totalQuestions} ` +
+                    `💡 ${progress.hintCount}`;
+            }
         }
-
-        // Define handleRestartQuiz in the global scope
-        window.handleRestartQuiz = async function() {
-            await quiz.restart();
-            await renderQuiz();
-            updateHintCount(quiz.getHintCount());
-            updateQuizProgress();
-        }
-
-        // Initialize the quiz
-        initializeQuiz();
 
         // Expose functions to window object
         window.handleSubmit = handleSubmit;
         window.showHint = showHint;
+        window.moveToNextQuestion = moveToNextQuestion;
+        window.handleRestartQuiz = handleRestartQuiz;
+        window.handleFinishQuiz = handleFinishQuiz;
+
+        // Initialize the quiz
+        initializeQuiz();
     </script>
 </body>
 </html>

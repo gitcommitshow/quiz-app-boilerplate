@@ -1,7 +1,7 @@
 [
     {
       "id": 1,
-      "version": 2,
+      "version": 4,
       "type": "objective",
       "question": "Which SQL clause is used to filter rows in a SELECT statement?",
       "options": [
@@ -10,7 +10,7 @@
         "GROUP BY",
         "ORDER BY"
       ],
-      "answer": "WHERE",
+      "expectedAnswer": "WHERE",
       "hints": [
         "This clause is used before any grouping operations.",
         "It's typically placed after the FROM clause in a SELECT statement."
@@ -21,6 +21,7 @@
       "version": 1,
       "type": "subjective",
       "question": "Create a SQL query to find the average salary for each department, but only include departments with more than 5 employees. Order the results by the average salary in descending order.",
+      "expectedAnswer": "select department, AVG(salary) as salary_avg from employees group by department having count(*) > 5 order by salary_avg desc",
       "keywords": ["SELECT", "AVG", "salary", "FROM", "employees", "GROUP BY", "department", "HAVING", "COUNT", "ORDER BY", "DESC"],
       "minKeywords": 6,
       "maxLength": 500,
@@ -34,6 +35,7 @@
       "version": 1,
       "type": "subjective",
       "question": "Write a query to select the top 5 customers who have made the most orders. Include the customer name and the total number of orders they've made.",
+      "expectedAnswer": "select c.customer_name, count(o.order_id) as total_orders from customers c join orders o on c.customer_id = o.customer_id group by c.customer_id order by total_orders desc limit 5",
       "keywords": ["SELECT", "customer_name", "COUNT", "orders", "JOIN", "customers", "GROUP BY", "ORDER BY", "DESC", "LIMIT"],
       "minKeywords": 7,
       "maxLength": 600,
