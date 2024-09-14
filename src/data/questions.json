@@ -43,5 +43,54 @@
         "Join the customers and orders tables.",
         "Use COUNT and GROUP BY to get the total orders per customer."
       ]
+    },
+    {
+      "id": 4,
+      "version": 1,
+      "type": "objective",
+      "question": "If a data point has a z-score of 2, what does this indicate about its position relative to the mean?",
+      "options": [
+        "It is 2 units below the mean",
+        "It is 2 units above the mean",
+        "It is 2 standard deviations below the mean",
+        "It is 2 standard deviations above the mean"
+      ],
+      "expectedAnswer": "It is 2 standard deviations above the mean",
+      "hints": [
+        "Z-score measures the number of standard deviations from the mean.",
+        "A positive z-score indicates a value above the mean."
+      ]
+    },
+    {
+      "id": 5,
+      "version": 1,
+      "type": "objective",
+      "question": "Which sampling method is most appropriate when you need to ensure that different subgroups of a population are represented proportionally in your sample?",
+      "options": [
+        "Simple random sampling",
+        "Stratified sampling",
+        "Cluster sampling",
+        "Convenience sampling"
+      ],
+      "expectedAnswer": "Stratified sampling",
+      "hints": [
+        "This method divides the population into subgroups before sampling.",
+        "It ensures representation of all subgroups in the final sample."
+      ]
+    },
+    {
+      "id": 6,
+      "version": 1,
+      "type": "subjective",
+      "question": "Write a PostgreSQL query to extract the 'name' field from a JSON column called 'user_data' in a table named 'users', but only for records where the JSON contains a 'age' field greater than 30.",
+      "expectedAnswer": "SELECT user_data->>'name' AS user_name FROM users WHERE (user_data->>'age')::int > 30;",
+      "keywords": ["SELECT", "JSON", "->", "->>", "name", "age"],
+      "minKeywords": 6,
+      "maxLength": 500,
+      "hints": [
+        "Use the '->' operator to access JSON object fields.",
+        "Use the '->>' operator to return JSON object fields as text.",
+        "Cast the 'age' field to an integer for comparison."
+      ]
     }
   ]
