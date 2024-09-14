@@ -2,8 +2,7 @@ import storage from './Storage.js';
 import { Question } from './Question.js';
 import { UserAnswer } from './UserAnswer.js';
 
-const DEFAULT_ANSWER_EVALUATION_API = 'http://localhost:8000/evaluate';
-
+export const DEFAULT_ANSWER_EVALUATION_API = 'http://localhost:8000/evaluate';
 /**
  * Represents a Quiz with questions, user answers, and evaluation functionality.
  * @class
