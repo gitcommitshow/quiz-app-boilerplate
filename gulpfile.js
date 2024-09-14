@@ -1,7 +1,12 @@
 // Import required modules
-const gulp = require('gulp');
-const browserSync = require('browser-sync').create();
-const clean = require('gulp-clean');  // Optional: To clean the build folder before building
+import gulp from 'gulp';
+import browserSync from 'browser-sync';
+import clean from 'gulp-clean';  // Optional: To clean the build folder before building
+import replace from 'gulp-replace';
+
+import { DEFAULT_ANSWER_EVALUATION_API } from './src/js/Quiz.js';
+// Any reference to this url, will be replaced with the actual API endpoint in the build process
+// Make sure to set the ANSWER_EVALUATION_API environment variable when building for production
 
 // File paths
 const paths = {
@@ -80,14 +85,26 @@ function buildImages() {
       .pipe(gulp.dest(paths.build + 'images'));
 }
 
+function replaceEnvVariables() {
+  if (!process.env.ANSWER_EVALUATION_API) {
+    console.log('ANSWER_EVALUATION_API not set, skipping replacement');
+    return Promise.resolve(); // Return a resolved promise to signal task completion
+  }
+  return gulp.src([paths.build + '*.html', paths.build + 'js/*.js'], { base: paths.build })
+    .pipe(replace('http://localhost:8000/evaluate', process.env.ANSWER_EVALUATION_API))
+    .pipe(gulp.dest(paths.build));
+}
+
 // Build task: Clean the build folder, then copy and process HTML, CSS, and JS
-const buildTask = gulp.series(cleanBuild, gulp.parallel(copyHTML, buildCSS, buildJS, buildData, buildImages));
+const buildTask = gulp.series(
+  cleanBuild, 
+  gulp.parallel(copyHTML, buildCSS, buildJS, buildData, buildImages), 
+  replaceEnvVariables
+);
 
 // Default task: Serve files with BrowserSync and watch for changes
 const serveDevTask = gulp.series(serveDev, watchFiles);
 const serveProdTask = gulp.series(serveProd, watchFiles);
 
 // Export tasks
-exports.default = serveDevTask;
-exports.build = buildTask;
-exports.serve = serveProdTask;
+export { buildTask as build, serveDevTask as dev, serveProdTask as serve };
