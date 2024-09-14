@@ -80,6 +80,8 @@ async function generateAnswer(question) {
     return response.choices[0].message.content;
   }
 
+app.get("/", (req, res) => res.send("✅ Quiz API Server is running"));
+
 /**
  * POST /evaluate
  * Evaluate an answer to a question
@@ -147,3 +149,5 @@ app.post('/ask', async (req, res) => {
 app.listen(API_SERVER_PORT, () => {
   console.log(`Quiz API Server running at http://localhost:${API_SERVER_PORT}`);
 });
+
+export default app;
