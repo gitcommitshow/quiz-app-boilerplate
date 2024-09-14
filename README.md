@@ -2,6 +2,8 @@
 
 This is a simple quiz app boilerplate
 
+![Screenshot](./screenshot.png)
+
 ## Features
 
 - Load questions from a JSON file
