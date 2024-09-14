@@ -21,11 +21,12 @@ app.use(express.json());
 
 const corsOptions = {
   origin: function (origin, callback) {
+    console.log('Request Origin:', origin);
     if (IS_DEVELOPMENT) {
       // Allow all origins in development
       callback(null, true);
     } else {
-      if (origin && ALLOWED_ORIGINS.indexOf(origin) !== -1) {
+      if (origin && ALLOWED_ORIGINS.includes(origin)) {
         callback(null, true);
       } else {
         callback(new Error('Not allowed by CORS. Only browser requests from allowed origins are allowed: '+ALLOWED_ORIGINS?.join(', ')));
