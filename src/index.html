@@ -15,11 +15,11 @@
         <div class="container mt-5">
             <h1 class="mb-4 text-center">🎯 Data Engineering Challenge</h1>
             <p class="mb-4 text-center">Practice data engineering skills with AI-powered hints and grading</p>
-            <br/><br/><br/>
+            <br/>
             <div id="quiz-container"></div>
         </div>
     </main>
-    <br/><br/>
+    <br/>
     <footer class="footer mt-auto py-3 bg-light">
         <div class="container">
             <div class="row align-items-center">
@@ -63,13 +63,15 @@
                         <input class="form-check-input" type="radio" id="option-${question.id}-${index}" 
                             name="answer-${question.id}" value="${option}"
                             ${userAnswer && userAnswer.answer === option ? 'checked' : ''}
-                            ${!isCurrent ? 'disabled' : ''}>
+                            ${!isCurrent ? 'disabled' : ''}
+                            onchange="toggleSubmitButton(${question.id})">
                         <label class="form-check-label" for="option-${question.id}-${index}">${option}</label>
                     </div>
                 `).join('');
             } else {
                 questionHtml += `<textarea class="form-control ${isCurrent && userAnswer && !userAnswer.isCorrect ? 'is-invalid' : ''}" id="subjective-answer-${question.id}" rows="6" 
-                    ${!isCurrent ? 'disabled' : ''}>${userAnswer ? userAnswer.answer : ''}</textarea>`;
+                    ${!isCurrent ? 'disabled' : ''}
+                    oninput="toggleSubmitButton(${question.id})">${userAnswer ? userAnswer.answer : ''}</textarea>`;
             }
 
             questionHtml += `
@@ -78,15 +80,19 @@
 
             if (isCurrent && !quiz.isQuizCompleted()) {
                 questionHtml += `
-                    <button class="btn btn-primary submit-btn" onclick="handleSubmit(${question.id})">Submit</button>
-                    <button class="btn btn-secondary hint-btn" onclick="showHint(${question.id}, 0)">Hint 1</button>
-                    <button class="btn btn-secondary hint-btn" onclick="showHint(${question.id}, 1)">Hint 2</button>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <button class="btn btn-primary submit-btn" onclick="handleSubmit(${question.id})" id="submit-btn-${question.id}" disabled>Submit</button>
+                        <div>
+                            <button class="btn btn-sm btn-outline-primary hint-btn" onclick="showHint(${question.id}, 0)">Hint 1</button>
+                            <button class="btn btn-sm btn-outline-primary hint-btn" onclick="showHint(${question.id}, 1)">Hint 2</button>
+                        </div>
+                    </div>
                 `;
             }
 
             questionHtml += `
                         <p class="hint d-none mt-2" id="hint-${question.id}-0">💡 ${question.hints[0]}</p>
-                        <p class="hint d-none mt-2" id="hint-${question.id}-1">💡${question.hints[1]}</p>
+                        <p class="hint d-none mt-2" id="hint-${question.id}-1">💡 ${question.hints[1]}</p>
             `;
 
             if (userAnswer) {
@@ -233,12 +239,27 @@
             }
         }
 
+        // Add this function to toggle the submit button
+        function toggleSubmitButton(questionId) {
+            const question = quiz.getCurrentQuestion();
+            const submitBtn = document.getElementById(`submit-btn-${questionId}`);
+            
+            if (question.type === 'objective') {
+                const selectedOption = document.querySelector(`input[name="answer-${questionId}"]:checked`);
+                submitBtn.disabled = !selectedOption;
+            } else {
+                const textArea = document.getElementById(`subjective-answer-${questionId}`);
+                submitBtn.disabled = textArea.value.trim() === '';
+            }
+        }
+
         // Expose functions to window object
         window.handleSubmit = handleSubmit;
         window.showHint = showHint;
         window.moveToNextQuestion = moveToNextQuestion;
         window.handleRestartQuiz = handleRestartQuiz;
         window.handleFinishQuiz = handleFinishQuiz;
+        window.toggleSubmitButton = toggleSubmitButton;
 
         // Initialize the quiz
         initializeQuiz();
