@@ -154,16 +154,15 @@ export class Quiz {
         
         console.log(`Submitting answer for question ${question.id}:`, { userAnswerText, isCorrect, grade });
 
-        const newAnswer = new UserAnswer(
-            question.id,
-            userAnswerText,
+        const newAnswer = new UserAnswer({
+            questionId: question.id,
+            answer: userAnswerText,
             isCorrect,
             grade,
             nextHint,
             fullEvaluation,
-            confidenceScore,
-            question.hintsUsed || 0
-        );
+            confidenceScore
+        });
 
         if (!this.userAnswers.has(question.id)) {
             this.userAnswers.set(question.id, []);
@@ -298,15 +297,7 @@ export class Quiz {
     incrementHintCount() {
         this.hintCount++;
         localStorage.setItem('hintCount', this.hintCount);
-        
-        // Increment hint count for the current question
-        const currentQuestion = this.getCurrentQuestion();
-        if (currentQuestion) {
-            const userAnswer = this.userAnswers.get(currentQuestion.id) || {};
-            userAnswer.hintsUsed = (userAnswer.hintsUsed || 0) + 1;
-            this.userAnswers.set(currentQuestion.id, userAnswer);
-        }
-
+        //TODO: Increment hint count for the current question
         return this.hintCount;
     }
 
@@ -386,8 +377,8 @@ export class Quiz {
             if (latestUserAnswer) {
                 // Calculate score based on grade and hints used
                 const grade = typeof latestUserAnswer.grade === 'number' ? latestUserAnswer.grade : (latestUserAnswer.isCorrect ? 10 : 0);
-                const hintPenalty = 0.1 * (latestUserAnswer.hintsUsed || 0); // 10% penalty per hint
-                const questionScore = Math.max(0, (grade / 10) - hintPenalty);
+                // const hintPenalty = 0.1 * (latestUserAnswer.hintsUsed || 0); // 10% penalty per hint
+                const questionScore = Math.max(0, (grade / 10));
                 totalScore += questionScore;
                 if (latestUserAnswer.isCorrect) {
                     correctAnswers++;
@@ -395,8 +386,8 @@ export class Quiz {
             }
             maxPossibleScore += 1; // Each question is worth 1 point max
         });
-
-        const overallScore = maxPossibleScore > 0 ? Math.round((totalScore / maxPossibleScore) * 100) : 0;
+        const hintPenalty = Math.min(correctAnswers*0.2, 0.1 * (this.hintCount || 0));
+        const overallScore = maxPossibleScore > 0 ? Math.round(((totalScore - hintPenalty) / maxPossibleScore) * 100) : 0;
 
         return {
             currentQuestionIndex: this.currentQuestionIndex,

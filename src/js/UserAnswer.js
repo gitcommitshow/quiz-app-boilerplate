@@ -3,7 +3,16 @@ import Storage from './Storage.js';
 export class UserAnswer {
     static storeName = 'userAnswers';
 
-    constructor(questionId, answer, isCorrect, grade = undefined, nextHint = undefined, fullEvaluation = undefined, confidenceScore = undefined, hintsUsed = 0, submittedAt = new Date().toISOString()) {
+    constructor({
+        questionId,
+        answer,
+        isCorrect,
+        grade = undefined,
+        nextHint = undefined,
+        fullEvaluation = undefined,
+        confidenceScore = undefined,
+        submittedAt = new Date().toISOString()
+    }) {
         this.questionId = questionId;
         this.answer = answer;
         this.isCorrect = isCorrect;
@@ -11,7 +20,6 @@ export class UserAnswer {
         this.nextHint = nextHint;
         this.fullEvaluation = fullEvaluation;
         this.confidenceScore = confidenceScore;
-        this.hintsUsed = hintsUsed;
         this.submittedAt = submittedAt;
     }
 
@@ -24,23 +32,21 @@ export class UserAnswer {
             nextHint: this.nextHint,
             fullEvaluation: this.fullEvaluation,
             confidenceScore: this.confidenceScore,
-            hintsUsed: this.hintsUsed,
             submittedAt: this.submittedAt
         };
     }
 
     static fromJSON(json) {
-        return new UserAnswer(
-            json.questionId,
-            json.answer,
-            json.isCorrect,
-            json.grade,
-            json.nextHint,
-            json.fullEvaluation,
-            json.confidenceScore,
-            json.hintsUsed,
-            json.submittedAt
-        );
+        return new UserAnswer({
+            questionId: json.questionId,
+            answer: json.answer,
+            isCorrect: json.isCorrect,
+            grade: json.grade,
+            nextHint: json.nextHint,
+            fullEvaluation: json.fullEvaluation,
+            confidenceScore: json.confidenceScore,
+            submittedAt: json.submittedAt
+        });
     }
 
     /**
@@ -63,7 +69,6 @@ export class UserAnswer {
      * //             nextHint: null,
      * //             fullEvaluation: null,
      * //             confidenceScore: null,
-     * //             hintsUsed: 0,
      * //             submittedAt: '2024-02-14T12:00:00Z'
      * //         }
      * //     ]
@@ -94,7 +99,6 @@ export class UserAnswer {
      * //                 nextHint: null,
      * //                 fullEvaluation: null,
      * //                 confidenceScore: null,
-     * //                 hintsUsed: 0,
      * //                 submittedAt: '2024-02-14T12:00:00Z'
      * //             },
      * //             ...

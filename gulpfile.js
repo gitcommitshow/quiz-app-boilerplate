@@ -107,4 +107,4 @@ const serveDevTask = gulp.series(serveDev, watchFiles);
 const serveProdTask = gulp.series(serveProd, watchFiles);
 
 // Export tasks
-export { buildTask as build, serveDevTask as dev, serveProdTask as serve };
+export { buildTask as build, serveDevTask as default, serveProdTask as serve };
