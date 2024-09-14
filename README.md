@@ -10,6 +10,8 @@ This is a simple quiz app boilerplate
 - Display questions and answers
 - Provide hints for incorrect answers
 - Save user answers to a JSON file
+- Evaluate subjective questions using AI
+- Incremental hints using AI
 
 ## Installation
 
