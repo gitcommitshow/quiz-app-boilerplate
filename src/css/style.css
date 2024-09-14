@@ -24,3 +24,6 @@ pre {
     border-radius: 5px;
     overflow-x: auto;
 }
+.faded {
+    opacity: 0.7;
+}

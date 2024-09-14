@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "gulp",
     "build": "gulp build",
-    "start": "npm run build && gulp serve"
+    "start": "gulp serve"
   },
   "keywords": [
     "data",
