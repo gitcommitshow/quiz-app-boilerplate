@@ -29,7 +29,7 @@ const corsOptions = {
       if (origin && ALLOWED_ORIGINS.includes(origin)) {
         callback(null, true);
       } else {
-        callback(new Error('Not allowed by CORS. Only browser requests from allowed origins are allowed: '+ALLOWED_ORIGINS?.join(', ')));
+        callback(new Error('Not allowed by CORS. Only browser requests from these origins are allowed: '+ALLOWED_ORIGINS?.join(', ')));
       }
     }
   },
