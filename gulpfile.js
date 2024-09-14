@@ -14,7 +14,7 @@ const paths = {
   css: './src/css/*.css',
   js: './src/js/*.js',
   data: './src/data/*.json',
-  images: './src/images/*',
+  images: './src/images/**/*',
   build: './build/',
 };
 
@@ -61,6 +61,15 @@ function copyHTML() {
   return gulp.src(paths.html).pipe(gulp.dest(paths.build));
 }
 
+function copyImages() {
+  return gulp.src(paths.images, { buffer: false })
+    .pipe(gulp.dest(paths.build + 'images'))
+    .on('error', function(err) {
+      console.error('Error in copyImages task:', err);
+      this.emit('end');
+    });
+}
+
 // Task to process and minify CSS files and move them to build folder
 function buildCSS() {
   return gulp.src(paths.css)
@@ -80,11 +89,6 @@ function buildData() {
       .pipe(gulp.dest(paths.build + 'data'));
 }
 
-function buildImages() {
-    return gulp.src(paths.images)
-      .pipe(gulp.dest(paths.build + 'images'));
-}
-
 function replaceEnvVariables() {
   if (!process.env.ANSWER_EVALUATION_API) {
     console.log('ANSWER_EVALUATION_API not set, skipping replacement');
@@ -98,13 +102,26 @@ function replaceEnvVariables() {
 // Build task: Clean the build folder, then copy and process HTML, CSS, and JS
 const buildTask = gulp.series(
   cleanBuild, 
-  gulp.parallel(copyHTML, buildCSS, buildJS, buildData, buildImages), 
+  gulp.parallel(copyHTML, copyImages, buildCSS, buildJS, buildData), 
   replaceEnvVariables
 );
 
 // Default task: Serve files with BrowserSync and watch for changes
 const serveDevTask = gulp.series(serveDev, watchFiles);
-const serveProdTask = gulp.series(serveProd, watchFiles);
+
+function watchAndRebuild() {
+  gulp.watch(paths.html, gulp.series(copyHTML, reload));
+  gulp.watch(paths.css, gulp.series(buildCSS, reload));
+  gulp.watch(paths.js, gulp.series(buildJS, reload));
+  gulp.watch(paths.data, gulp.series(buildData, reload));
+  gulp.watch(paths.images, gulp.series(copyImages, reload));
+}
+
+const serveProdTask = gulp.series(
+  buildTask,
+  serveProd,
+  watchAndRebuild
+);
 
 // Export tasks
 export { buildTask as build, serveDevTask as default, serveProdTask as serve };
