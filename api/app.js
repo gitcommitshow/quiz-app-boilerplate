@@ -3,6 +3,9 @@ import OpenAI from 'openai';
 import cors from 'cors';
 
 
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+const EVALUATION_MODEL = process.env.EVALUATION_MODEL || 'gpt-4o-mini';
+const ANSWER_MODEL = process.env.ANSWER_MODEL || 'gpt-4o-mini';
 const API_SERVER_PORT = process.env.API_SERVER_PORT || 8000;
 const ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS 
         ? process.env.ALLOWED_ORIGINS.split(',') 
@@ -10,11 +13,8 @@ const ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS
 const IS_DEVELOPMENT = process.env.NODE_ENV !== 'production';
 
 const client = new OpenAI({
-  apiKey: process.env['OPENAI_API_KEY']
+  apiKey: OPENAI_API_KEY
 });
-
-const EVALUATION_MODEL = 'gpt-4o-mini';
-const ANSWER_MODEL = 'gpt-4o-mini';
 
 const app = express();        
 app.use(express.json());
