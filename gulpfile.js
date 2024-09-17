@@ -11,8 +11,8 @@ import { DEFAULT_ANSWER_EVALUATION_API } from './src/js/Quiz.js';
 // File paths
 const paths = {
   html: './src/*.html',
-  css: './src/css/*.css',
-  js: './src/js/*.js',
+  css: './src/css/**/*.css',
+  js: './src/js/**/*',  // Updated to include all subdirectories
   data: './src/data/*.json',
   images: './src/images/**/*',
   build: './build/',
@@ -77,11 +77,15 @@ function buildCSS() {
     .pipe(gulp.dest(paths.build + 'css'));
 }
 
-// Task to minify JS files and move them to build folder
+// Update the buildJS function to copy all JS files and subdirectories
+// Might include minification in the future
 function buildJS() {
   return gulp.src(paths.js)
-    // .pipe(uglify())  // Minify JS
-    .pipe(gulp.dest(paths.build + 'js'));
+    .pipe(gulp.dest(paths.build + 'js'))
+    .on('error', function(err) {
+      console.error('Error in buildJS task:', err);
+      this.emit('end');
+    });
 }
 
 function buildData() {

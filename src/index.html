@@ -42,6 +42,8 @@
 
     <script type="module">
         import { Quiz } from './js/Quiz.js';
+        import { marked } from './js/lib/marked.esm.js';
+        import DOMPurify from './js/lib/purify.es.mjs';
 
         const quiz = new Quiz();
         let currentQuestion;
@@ -53,7 +55,7 @@
                         <h3 class="mb-0">Question ${question.id}</h3>
                     </div>
                     <div id="question-content-${question.id}" class="collapse ${isCurrent ? 'show' : ''} question-content card-body">
-                        <p class="card-text">${question.question}</p>
+                        <p class="card-text">${DOMPurify.sanitize(marked.parse(question.question))}</p>
                         <div class="answer-container mb-3">
             `;
 
@@ -104,7 +106,7 @@
                         ${(!isCurrent || userAnswer.isCorrect) && userAnswer.fullEvaluation ? `
                             <div class="full-evaluation mt-2">
                                 <strong>Evaluation:</strong><br>
-                                ${userAnswer.fullEvaluation}
+                                ${DOMPurify.sanitize(marked.parse(userAnswer.fullEvaluation))}
                             </div>
                         ` : ''}
                         ${isCurrent && !userAnswer.isCorrect && userAnswer.nextHint ? `<strong>AI Suggestion:</strong> ${userAnswer.nextHint}` : ''}

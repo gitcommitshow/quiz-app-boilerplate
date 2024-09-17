@@ -1,9 +1,9 @@
 [
     {
       "id": 1,
-      "version": 5,
+      "version": 10,
       "type": "objective",
-      "question": "Which SQL clause is used to filter rows in a SELECT statement?",
+      "question": "Which `SQL` clause is used to filter rows in a `SELECT` statement?",
       "options": [
         "WHERE",
         "SELECT",
@@ -18,11 +18,11 @@
     },
     {
       "id": 2,
-      "version": 1,
+      "version": 12,
       "type": "subjective",
-      "question": "Create a SQL query to find the average salary for each department, but only include departments with more than 5 employees. Order the results by the average salary in descending order.",
+      "question": "Write a `SQL` query to find the average salary for each department, but only include departments with more than 5 employees. Order the results by the average salary in descending order.<hr>**Note:** You may use any reasonable table schema in your mental model; the core concept is what matters.",
       "expectedAnswer": "select department, AVG(salary) as salary_avg from employees group by department having count(*) > 5 order by salary_avg desc",
-      "keywords": ["SELECT", "AVG", "salary", "FROM", "employees", "GROUP BY", "department", "HAVING", "COUNT", "ORDER BY", "DESC"],
+      "keywords": ["SELECT", "AVG", "FROM", "GROUP BY", "department", "HAVING", "COUNT", "ORDER BY", "DESC"],
       "minKeywords": 6,
       "maxLength": 500,
       "hints": [
@@ -80,17 +80,65 @@
     },
     {
       "id": 6,
-      "version": 1,
+      "version": 2,
       "type": "subjective",
-      "question": "Write a PostgreSQL query to extract the 'name' field from a JSON column called 'user_data' in a table named 'users', but only for records where the JSON contains a 'age' field greater than 30.",
+      "question": "Write a PostgreSQL query to extract the `name` field from a JSON column called `user_data` in a table named `users`, but only for records where the JSON contains a `age` field greater than 30.",
       "expectedAnswer": "SELECT user_data->>'name' AS user_name FROM users WHERE (user_data->>'age')::int > 30;",
-      "keywords": ["SELECT", "JSON", "->", "->>", "name", "age"],
+      "keywords": ["SELECT", "->", "->>", "name", "age", "user_data", "FROM"],
       "minKeywords": 6,
       "maxLength": 500,
       "hints": [
         "Use the '->' operator to access JSON object fields.",
         "Use the '->>' operator to return JSON object fields as text.",
         "Cast the 'age' field to an integer for comparison."
+      ]
+    },
+    {
+      "id": 7,
+      "version": 1,
+      "type": "objective",
+      "question": "Which of the following is NOT a common data warehouse architecture?",
+      "options": [
+        "Star schema",
+        "Snowflake schema",
+        "Galaxy schema",
+        "Pyramid schema"
+      ],
+      "expectedAnswer": "Pyramid schema",
+      "hints": [
+        "Think about the most common dimensional modeling techniques.",
+        "One of these options is not typically used in data warehousing."
+      ]
+    },
+    {
+      "id": 8,
+      "version": 1,
+      "type": "subjective",
+      "question": "Explain the concept of data partitioning in big data systems and provide an example of how it can improve query performance.",
+      "expectedAnswer": "Data partitioning is the process of dividing large datasets into smaller, more manageable pieces called partitions. This technique can significantly improve query performance by allowing parallel processing and reducing the amount of data scanned. For example, in a large table of sales data, partitioning by date can allow queries for specific time periods to scan only relevant partitions, rather than the entire dataset.",
+      "keywords": ["dataset", "processing", "performance"],
+      "minKeywords": 5,
+      "maxLength": 600,
+      "hints": [
+        "Consider how breaking up data can affect query execution.",
+        "Think about scenarios where you'd want to access only a portion of a large dataset."
+      ]
+    },
+    {
+      "id": 9,
+      "version": 1,
+      "type": "objective",
+      "question": "Which of the following is a characteristic of a slowly changing dimension (`SCD`) Type 2 in data warehousing?",
+      "options": [
+        "Overwriting the old value with the new value",
+        "Adding a new column for the new value",
+        "Creating a new row for each change, preserving historical data",
+        "Maintaining separate current and historical tables"
+      ],
+      "expectedAnswer": "Creating a new row for each change, preserving historical data",
+      "hints": [
+        "Think about how historical data is handled in different SCD types.",
+        "Consider which method allows for tracking changes over time within the same table."
       ]
     }
   ]
