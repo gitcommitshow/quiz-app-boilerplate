@@ -1,12 +1,12 @@
 [
     {
       "id": 1,
-      "version": 4,
+      "version": 5,
       "type": "objective",
       "question": "Which SQL clause is used to filter rows in a SELECT statement?",
       "options": [
         "WHERE",
-        "HAVING",
+        "SELECT",
         "GROUP BY",
         "ORDER BY"
       ],
