@@ -140,5 +140,33 @@
         "Think about how historical data is handled in different SCD types.",
         "Consider which method allows for tracking changes over time within the same table."
       ]
+    },
+    {
+      "id": 10,
+      "version": 1,
+      "type": "subjective",
+      "question": "The following SQL query is intended to retrieve the total sales for each product category, but it contains an error. Identify and fix the error: `SELECT category, SUM(sales) FROM products GROUP BY product_id;`",
+      "expectedAnswer": "SELECT category, SUM(sales) FROM products GROUP BY category;",
+      "keywords": ["SELECT", "SUM", "FROM", "GROUP BY"],
+      "minKeywords": 4,
+      "maxLength": 300,
+      "hints": [
+        "Ensure that the GROUP BY clause includes the correct column.",
+        "Think about how to aggregate data by category."
+      ]
+    },
+    {
+      "id": 11,
+      "version": 1,
+      "type": "subjective",
+      "question": "Optimize the following SQL query to improve its performance: `SELECT * FROM orders WHERE customer_id IN (SELECT customer_id FROM customers WHERE status = 'active');`",
+      "expectedAnswer": "SELECT o.* FROM orders o JOIN customers c ON o.customer_id = c.customer_id WHERE c.status = 'active';",
+      "keywords": ["SELECT", "FROM", "WHERE", "JOIN"],
+      "minKeywords": 4,
+      "maxLength": 300,
+      "hints": [
+        "Consider using a JOIN instead of a subquery.",
+        "Think about how to reduce the number of rows processed."
+      ]
     }
   ]
