@@ -11,6 +11,7 @@ body {
 }
 
 .current {
+    /**TODO: Use box shadow to highlight **/
     border: 2px solid #007bff;
 }
 

@@ -1,4 +1,3 @@
-import storage from './Storage.js';
 import { Question } from './Question.js';
 import { UserAnswer } from './UserAnswer.js';
 
@@ -470,5 +469,12 @@ export class Quiz {
      */
     completeQuiz() {
         this.isCompleted = true;
+    }
+
+    /**
+     * 
+     */
+    getNewQuestions(){
+        
     }
 }
