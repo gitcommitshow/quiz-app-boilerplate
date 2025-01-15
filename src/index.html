@@ -51,7 +51,8 @@
             // Initialize mermaid
             mermaid.initialize({
                 startOnLoad: true,
-                theme: 'default'
+                theme: 'default',
+                look: 'handDrawn'
             });
         });
    
@@ -68,7 +69,12 @@
 
         function postprocess(html) {
             console.log("If mermaid code is there, render it");
-            mermaid.contentLoaded();
+            // mermaid.contentLoaded();
+            setTimeout(() => {
+                mermaid.run({
+                    querySelector: '.show .mermaid', //Only render visible mermaid elements
+                });
+            }, 300); 
             console.log("Sanitizing html generated from markdown");
             return DOMPurify.sanitize(html);
         }
