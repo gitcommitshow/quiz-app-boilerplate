@@ -5,8 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Data Engineering Challenge</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎯</text></svg>">
-    <!-- Bootstrap CSS -->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <!-- Load Bootstrap CSS -->
+    <script type="module">
+        import 'bootstrap/dist/css/bootstrap.min.css';
+    </script>
     <!-- Custom CSS -->
     <link rel="stylesheet" href="css/style.css">
 </head>
@@ -37,10 +39,8 @@
         </div>
     </footer>
 
-    <!-- Bootstrap JS (optional, but needed for some Bootstrap features) -->
-    <script src="./js/bootstrap.bundle.min.js"></script>
-
     <script type="module">
+        import 'bootstrap/dist/js/bootstrap.bundle.min.js';
         import { Quiz } from './js/Quiz.js';
         import { marked } from 'marked';
         import DOMPurify from 'dompurify';

@@ -18,9 +18,9 @@
     },
     {
       "id": 2,
-      "version": 24,
+      "version": 25,
       "type": "subjective",
-      "question": "Write a `SQL` query to find the average salary for each department, but only include departments with more than 5 employees. Order the results by the average salary in descending order.\n\n```mermaid\nerDiagram\n    Department ||--o{ Employee : \"has many\"\n    Employee {\n        int id\n        string name\n        int salary\n        int department_id\n    }\n    Department {\n        int id\n        string name\n    }\n```\n\n**Note:** The schema is only indictive, you may use any reasonable table schema in your mental model; the core concept is what matters.",
+      "question": "Write a `SQL` query to find the average salary for each department, but only include departments with more than 5 employees. Order the results by the average salary in descending order.\n\n```mermaid\nerDiagram\n    Department ||--o{ Employee : \"has many\"\n    Employee {\n        int id\n        string name\n        int salary\n        int department_id\n    }\n    Department {\n        int id\n        string name\n    }\n```\n\n**Note:** The schema is only indicative, you may use any reasonable table schema in your mental model; the core concept is what matters.",
       "expectedAnswer": "select department, AVG(salary) as salary_avg from employees group by department having count(*) > 5 order by salary_avg desc",
       "keywords": ["SELECT", "AVG", "FROM", "GROUP BY", "department", "HAVING", "COUNT", "ORDER BY", "DESC"],
       "minKeywords": 6,

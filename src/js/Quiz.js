@@ -62,7 +62,7 @@ export class Quiz {
      */
     async loadQuestions() {
         try {
-            const response = await fetch('data/questions.json');
+            const response = await fetch('questions.json');
             if (!response.ok) throw new Error('Network response was not ok');
             const remoteQuestions = await response.json();
             this.questions = await Question.sync(remoteQuestions);
