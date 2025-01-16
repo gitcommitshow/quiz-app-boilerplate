@@ -30,7 +30,7 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     env:
-      ANSWER_EVALUATION_API: ${{ secrets.ANSWER_EVALUATION_API }}
+      VITE_ANSWER_EVALUATION_API: ${{ secrets.VITE_ANSWER_EVALUATION_API }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
