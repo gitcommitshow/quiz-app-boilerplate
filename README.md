@@ -2,12 +2,14 @@
 
 This is a simple quiz app boilerplate
 
-![Screenshot](./screenshot.png)
+![Screenshot](./feature_banner.png)
 
 ## Features
 
 - Load questions from a JSON file
 - Display questions and answers
+    - Supports diagrams via mermaid
+    - Supports markdown text
 - Provide hints for incorrect answers
 - Save user answers to a JSON file
 - Evaluate subjective questions using AI
@@ -21,6 +23,7 @@ This is a simple quiz app boilerplate
 
 ## Deployment
 
-1. Run `npm run build` to build the app
-2. The `build` folder will be created with the app ready to be deployed
-3. Deploy the `build` folder to your favorite hosting service
+1. Set the environment variables (check out `sample.env` for the list of these vars)
+2. Run `npm run build` to build the app
+4. The `dist` folder will be created with the app ready to be deployed
+4. Deploy the `dist` folder to your favorite hosting service
