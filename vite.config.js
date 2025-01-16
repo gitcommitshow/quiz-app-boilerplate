@@ -33,9 +33,9 @@ export default defineConfig(({ command, mode }) => {
 
     // Environment variable replacement
     define: {
-      DEFAULT_ANSWER_EVALUATION_API: JSON.stringify(
+      VITE_ANSWER_EVALUATION_API: JSON.stringify(
         isProduction 
-          ? process.env.ANSWER_EVALUATION_API 
+          ? process.env.VITE_ANSWER_EVALUATION_API 
           : 'http://localhost:8000/evaluate'
       )
     },
