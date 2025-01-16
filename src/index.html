@@ -5,8 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Data Engineering Challenge</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎯</text></svg>">
-    <!-- Bootstrap CSS -->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <!-- Load Bootstrap CSS -->
+    <script type="module">
+        import 'bootstrap/dist/css/bootstrap.min.css';
+    </script>
     <!-- Custom CSS -->
     <link rel="stylesheet" href="css/style.css">
 </head>
@@ -37,13 +39,61 @@
         </div>
     </footer>
 
-    <!-- Bootstrap JS (optional, but needed for some Bootstrap features) -->
-    <script src="js/bootstrap.bundle.min.js"></script>
-
     <script type="module">
+        import 'bootstrap/dist/js/bootstrap.bundle.min.js';
         import { Quiz } from './js/Quiz.js';
-        import { marked } from './js/lib/marked.esm.js';
-        import DOMPurify from './js/lib/purify.es.mjs';
+        import { marked } from 'marked';
+        import DOMPurify from 'dompurify';
+        import mermaid from 'mermaid';
+
+
+        document.addEventListener("DOMContentLoaded", () => {
+            // Initialize mermaid
+            mermaid.initialize({
+                startOnLoad: true,
+                theme: 'default',
+                look: 'handDrawn'
+            });
+        });
+   
+        mermaid.parseError = function (err, hash) {
+            console.error("Error in rendering mermaid code");
+            console.error(err);
+        };
+
+        marked.use({
+            async: false,
+            pedantic: false,
+            gfm: true,
+        });
+
+        function postprocess(html) {
+            console.log("If mermaid code is there, render it");
+            // mermaid.contentLoaded();
+            setTimeout(() => {
+                mermaid.run({
+                    querySelector: '.show .mermaid', //Only render visible mermaid elements
+                });
+            }, 300); 
+            console.log("Sanitizing html generated from markdown");
+            return DOMPurify.sanitize(html);
+        }
+        
+        marked.use({
+            renderer: {
+                code: function ({ lang, raw, text }) {
+                    if (lang == 'mermaid') {
+                        console.log("Found mermaid code. Rendering visualization now...");
+                        return `<pre class="mermaid">${text}</pre>`;
+                    }
+                    return false;
+                },
+            },
+        });
+
+        marked.use({
+            hooks: { postprocess } 
+        })
 
         const quiz = new Quiz();
         let currentQuestion;
@@ -55,7 +105,7 @@
                         <h3 class="mb-0">Question ${question.id}</h3>
                     </div>
                     <div id="question-content-${question.id}" class="collapse ${isCurrent ? 'show' : ''} question-content card-body">
-                        <p class="card-text">${DOMPurify.sanitize(marked.parse(question.question))}</p>
+                        <p class="card-text">${marked.parse(question.question)}</p>
                         <div class="answer-container mb-3">
             `;
 
@@ -106,7 +156,7 @@
                         ${(!isCurrent || userAnswer.isCorrect) && userAnswer.fullEvaluation ? `
                             <div class="full-evaluation mt-2">
                                 <strong>Evaluation:</strong><br>
-                                ${DOMPurify.sanitize(marked.parse(userAnswer.fullEvaluation))}
+                                ${marked.parse(userAnswer.fullEvaluation)}
                             </div>
                         ` : ''}
                         ${isCurrent && !userAnswer.isCorrect && userAnswer.nextHint ? `<strong>AI Suggestion:</strong> ${userAnswer.nextHint}` : ''}

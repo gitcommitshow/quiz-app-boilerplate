@@ -1,4 +1,3 @@
-import storage from './Storage.js';
 import { Question } from './Question.js';
 import { UserAnswer } from './UserAnswer.js';
 
@@ -63,7 +62,7 @@ export class Quiz {
      */
     async loadQuestions() {
         try {
-            const response = await fetch('data/questions.json');
+            const response = await fetch('questions.json');
             if (!response.ok) throw new Error('Network response was not ok');
             const remoteQuestions = await response.json();
             this.questions = await Question.sync(remoteQuestions);
@@ -470,5 +469,12 @@ export class Quiz {
      */
     completeQuiz() {
         this.isCompleted = true;
+    }
+
+    /**
+     * 
+     */
+    getNewQuestions(){
+        
     }
 }
