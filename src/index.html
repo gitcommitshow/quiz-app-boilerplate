@@ -195,7 +195,7 @@
             } else if (quiz.isQuizCompleted()) {
                 showQuizCompletion();
                 const quizProgress = quiz.getQuizProgress();
-                rudderanalytics.track("quiz completed", {
+                rudderAnalytics.track("quiz completed", {
                     quiz_score: quizProgress.overallScore,
                     quiz_total_questions: quizProgress.totalQuestions,
                     quiz_answered_questions: quizProgress.answeredQuestions,
@@ -283,7 +283,7 @@
             const { isCorrect, grade, nextHint, fullEvaluation, confidenceScore } = await quiz.submitAnswer(userAnswer, questionId);
 
             await renderQuiz();
-            rudderanalytics.track(`question ${questionId} attempted`, {
+            rudderAnalytics.track(`question ${questionId} attempted`, {
                 is_correct: isCorrect,
                 grade: grade,
                 next_hint: nextHint,
