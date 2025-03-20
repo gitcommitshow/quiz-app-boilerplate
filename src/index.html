@@ -55,6 +55,7 @@
         document.addEventListener("DOMContentLoaded", () => {
             rudderAnalytics.ready(() => {
                 console.log("The JavaScript SDK is ready.");
+                rudderAnalytics.page();
             });
 
             // Initialize mermaid
