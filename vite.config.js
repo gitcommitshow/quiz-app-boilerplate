@@ -1,9 +1,11 @@
-import { defineConfig } from 'vite';
+import { defineConfig, loadEnv } from 'vite';
 import { resolve } from 'path';
 
 export default defineConfig(({ command, mode }) => {
   const isProduction = mode === 'production';
-  
+  // Load environment variables from .env file that starts with VITE_
+  const env = loadEnv(mode, process.cwd(), 'VITE_');
+
   return {
     root: 'src',
     base: './',
@@ -33,9 +35,11 @@ export default defineConfig(({ command, mode }) => {
 
     // Environment variable replacement
     define: {
-      VITE_ANSWER_EVALUATION_API: JSON.stringify(
+      'process.env.VITE_ANALYTICS_WRITE_KEY': JSON.stringify(env.VITE_ANALYTICS_WRITE_KEY),
+      'process.env.VITE_ANALYTICS_DATA_PLANE_URL': JSON.stringify(env.VITE_ANALYTICS_DATA_PLANE_URL),
+      'process.env.VITE_ANSWER_EVALUATION_API': JSON.stringify(
         isProduction 
-          ? process.env.VITE_ANSWER_EVALUATION_API 
+          ? env.VITE_ANSWER_EVALUATION_API 
           : 'http://localhost:8000/evaluate'
       )
     },

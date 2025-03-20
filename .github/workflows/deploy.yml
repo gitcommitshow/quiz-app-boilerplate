@@ -31,6 +31,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       VITE_ANSWER_EVALUATION_API: ${{ secrets.VITE_ANSWER_EVALUATION_API }}
+      VITE_ANALYTICS_WRITE_KEY: ${{ secrets.VITE_ANALYTICS_WRITE_KEY }}
+      VITE_ANALYTICS_DATA_PLANE_URL: ${{ secrets.VITE_ANALYTICS_DATA_PLANE_URL }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4

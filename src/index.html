@@ -40,6 +40,11 @@
     </footer>
 
     <script type="module">
+        import { RudderAnalytics } from '@rudderstack/analytics-js';
+        const rudderAnalytics = new RudderAnalytics();
+        rudderAnalytics.load(process.env.VITE_ANALYTICS_WRITE_KEY, process.env.VITE_ANALYTICS_DATA_PLANE_URL, {});
+        export { rudderAnalytics };
+
         import 'bootstrap/dist/js/bootstrap.bundle.min.js';
         import { Quiz } from './js/Quiz.js';
         import { marked } from 'marked';
@@ -48,6 +53,10 @@
 
 
         document.addEventListener("DOMContentLoaded", () => {
+            rudderAnalytics.ready(() => {
+                console.log("The JavaScript SDK is ready.");
+            });
+
             // Initialize mermaid
             mermaid.initialize({
                 startOnLoad: true,
