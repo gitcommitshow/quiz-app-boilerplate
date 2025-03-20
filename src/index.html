@@ -54,7 +54,8 @@
 
         document.addEventListener("DOMContentLoaded", () => {
             rudderAnalytics.ready(() => {
-                console.log("The JavaScript SDK is ready.");
+                console.log("The RudderStack JavaScript SDK is ready.");
+                rudderAnalytics.page();
             });
 
             // Initialize mermaid
@@ -193,6 +194,14 @@
                 renderQuiz();
             } else if (quiz.isQuizCompleted()) {
                 showQuizCompletion();
+                const quizProgress = quiz.getQuizProgress();
+                rudderAnalytics.track("quiz completed", {
+                    quiz_score: quizProgress.overallScore,
+                    quiz_total_questions: quizProgress.totalQuestions,
+                    quiz_answered_questions: quizProgress.answeredQuestions,
+                    quiz_correct_answers: quizProgress.correctAnswers,
+                    quiz_hint_count: quizProgress.hintCount
+                });
             }
         }
 
@@ -274,6 +283,13 @@
             const { isCorrect, grade, nextHint, fullEvaluation, confidenceScore } = await quiz.submitAnswer(userAnswer, questionId);
 
             await renderQuiz();
+            rudderAnalytics.track(`question ${questionId} attempted`, {
+                is_correct: isCorrect,
+                grade: grade,
+                next_hint: nextHint,
+                confidence_score: confidenceScore,
+                full_evaluation: fullEvaluation
+            });
         }
 
         // Add this new function to handle finishing the quiz
