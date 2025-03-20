@@ -283,7 +283,7 @@
             const { isCorrect, grade, nextHint, fullEvaluation, confidenceScore } = await quiz.submitAnswer(userAnswer, questionId);
 
             await renderQuiz();
-            rudderAnalytics.track(`question attempted`, {
+            rudderAnalytics.track("question attempted", {
                 question_id: questionId,
                 is_correct: isCorrect,
                 grade: grade,
