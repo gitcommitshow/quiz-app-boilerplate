@@ -133,7 +133,8 @@
             } else {
                 questionHtml += `<textarea class="form-control ${isCurrent && userAnswer && !userAnswer.isCorrect ? 'is-invalid' : ''}" id="subjective-answer-${question.id}" rows="6" 
                     ${!isCurrent ? 'disabled' : ''}
-                    oninput="toggleSubmitButton(${question.id})">${userAnswer ? userAnswer.answer : ''}</textarea>`;
+                    oninput="toggleSubmitButton(${question.id})"
+                    onkeydown="handleTextareaKeydown(event, ${question.id})">${userAnswer ? userAnswer.answer : ''}</textarea>`;
             }
 
             questionHtml += `
@@ -331,6 +332,14 @@
             }
         }
 
+        function handleTextareaKeydown(event, questionId) {
+            // Ctrl+Enter (Win/Linux) or Cmd+Enter (Mac)
+            if ((event.ctrlKey || event.metaKey) && event.key === "Enter") {
+                event.preventDefault();
+                handleSubmit(questionId);
+            }
+        }
+
         // Expose functions to window object
         window.handleSubmit = handleSubmit;
         window.showHint = showHint;
@@ -338,6 +347,8 @@
         window.handleRestartQuiz = handleRestartQuiz;
         window.handleFinishQuiz = handleFinishQuiz;
         window.toggleSubmitButton = toggleSubmitButton;
+        // Expose to window
+        window.handleTextareaKeydown = handleTextareaKeydown;
 
         // Initialize the quiz
         initializeQuiz();
