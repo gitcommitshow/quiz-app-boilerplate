@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Data Engineering Challenge - Practice SQL, ETL & Data Pipeline Skills | AI-Powered Quiz</title>
-    <meta name="description" content="Master data engineering skills with interactive quizzes covering SQL, databases, ETL, data warehousing, and pipeline design. AI-powered grading and progressive hints help you learn effectively.">
-    <meta name="keywords" content="data engineering quiz, SQL practice, data engineer skills assessment, ETL practice, data pipeline quiz, data engineering interview prep, database quiz, data warehousing practice, big data quiz">
+    <title>Data Engineering Challenge 2026 - AI-Native LeetCode for Data Engineers | Practice SQL, Statistics, ETL & Data Pipeline Skills</title>
+    <meta name="description" content="AI-native LeetCode for data engineers. Master data engineering skills with expert-designed challenges covering SQL, databases, statistics, ETL, data warehousing, and pipeline design. AI-powered grading used responsibly to keep learning challenging and fun.">
+    <meta name="keywords" content="data engineering quiz, SQL practice, data engineer skills assessment, ETL practice, data pipeline quiz, data engineering interview prep, database quiz, data warehousing practice, big data quiz, statistics for data engineers">
     <meta name="author" content="Data Engineering Challenge">
     <link rel="canonical" href="" id="canonical-url">
     
@@ -13,14 +13,14 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="" id="og-url">
     <meta property="og:title" content="Data Engineering Challenge - Practice SQL, ETL & Data Pipeline Skills">
-    <meta property="og:description" content="Master data engineering skills with interactive quizzes covering SQL, databases, ETL, data warehousing, and pipeline design. AI-powered grading and progressive hints help you learn effectively.">
+    <meta property="og:description" content="AI-native LeetCode for data engineers. Master data engineering skills with expert-designed challenges covering SQL, databases, statistics, ETL, data warehousing, and pipeline design. AI-powered grading used responsibly to keep learning challenging and fun.">
     <meta property="og:image" content="" id="og-image">
     
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:url" content="" id="twitter-url">
     <meta name="twitter:title" content="Data Engineering Challenge - Practice SQL, ETL & Data Pipeline Skills">
-    <meta name="twitter:description" content="Master data engineering skills with interactive quizzes covering SQL, databases, ETL, data warehousing, and pipeline design. AI-powered grading and progressive hints help you learn effectively.">
+    <meta name="twitter:description" content="AI-native LeetCode for data engineers. Master data engineering skills with expert-designed challenges covering SQL, databases, statistics, ETL, data warehousing, and pipeline design. AI-powered grading used responsibly to keep learning challenging and fun.">
     <meta name="twitter:image" content="" id="twitter-image">
     
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎯</text></svg>">
@@ -34,6 +34,11 @@
         document.getElementById('twitter-url').setAttribute('content', siteUrl);
         document.getElementById('twitter-image').setAttribute('content', siteUrl + '/images/og-image.png');
     </script>
+    <!-- Google Fonts - Inter for better readability -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
     <!-- Load Bootstrap CSS -->
     <script type="module">
         import 'bootstrap/dist/css/bootstrap.min.css';
@@ -47,7 +52,7 @@
         "@context": "https://schema.org",
         "@type": "WebApplication",
         "name": "Data Engineering Challenge",
-        "description": "Interactive data engineering quiz platform with AI-powered grading and progressive hints. Practice SQL, databases, ETL, data warehousing, and data pipeline design skills.",
+        "description": "AI-native LeetCode for data engineers. Expert-designed challenges with AI-powered grading used responsibly to keep learning challenging and fun. Practice SQL, databases, statistics, ETL, data warehousing, and data pipeline design skills with error-free learning.",
         "applicationCategory": "EducationalApplication",
         "operatingSystem": "Web",
         "offers": {
@@ -61,11 +66,12 @@
             "ratingCount": "100"
         },
         "featureList": [
-            "AI-powered answer evaluation",
+            "AI-powered grading",
+            "Invisible AI assistance",
             "Progressive hint system",
             "Offline-first architecture",
             "Multiple question types (objective and subjective)",
-            "Real-time feedback and grading",
+            "Instant feedback",
             "Comprehensive skill assessment"
         ]
     }
@@ -75,7 +81,7 @@
         "@context": "https://schema.org",
         "@type": "EducationalOccupationalCredential",
         "name": "Data Engineering Skills Assessment",
-        "description": "Assess and improve your data engineering skills through interactive quizzes covering SQL, databases, ETL, data warehousing, and pipeline design.",
+        "description": "Assess and improve your data engineering skills through interactive quizzes covering SQL, databases, statistics, ETL, data warehousing, and pipeline design.",
         "credentialCategory": "Assessment",
         "competencyRequired": "Data Engineering",
         "educationalLevel": "Professional"
@@ -87,14 +93,33 @@
         <div class="container mt-5">
             <!-- Hero Section -->
             <header class="text-center mb-5">
-                <h1 class="display-4 mb-4">🎯 Data Engineering Challenge</h1>
-                <p class="lead mb-4">Master data engineering skills with interactive quizzes covering SQL, databases, ETL, data warehousing, and pipeline design</p>
-                <p class="text-muted">AI-powered grading and progressive hints help you learn effectively</p>
+                <h1 class="display-4 mb-4"><span class="emoji-icon">🎯</span> Data Engineering Challenge</h1>
+                <p class="lead mb-2">AI-native LeetCode for data engineers</p>
+                <p class="text-muted">AI-powered grading and hints used responsibly to keep it challenging and fun</p>
             </header>
 
             <!-- Quiz Container -->
             <section aria-labelledby="quiz-heading" class="mb-5">
                 <div id="quiz-container"></div>
+            </section>
+
+            <!-- Get Help CTA Section -->
+            <section class="mb-5 text-center">
+                <div class="card border-0 bg-light">
+                    <div class="card-body py-4">
+                        <h3 class="h5 mb-3">Need Help?</h3>
+                        <p class="text-muted mb-3">Stuck on a question? Get help from the community!</p>
+                        <a href="https://www.reddit.com/r/dataengineering" target="_blank" rel="noopener noreferrer" class="btn btn-dark mb-3">Post on r/dataengineering</a>
+                        <p class="small text-muted mb-0">
+                            Also try: 
+                            <a href="https://www.reddit.com/r/PostgreSQL" target="_blank" rel="noopener noreferrer" class="text-decoration-none">r/PostgreSQL</a> • 
+                            <a href="https://www.reddit.com/r/sql" target="_blank" rel="noopener noreferrer" class="text-decoration-none">r/sql</a> • 
+                            <a href="https://www.reddit.com/r/devops" target="_blank" rel="noopener noreferrer" class="text-decoration-none">r/devops</a> • 
+                            <a href="https://www.reddit.com/r/bigdata" target="_blank" rel="noopener noreferrer" class="text-decoration-none">r/bigdata</a> • 
+                            <a href="https://www.reddit.com/r/statistics" target="_blank" rel="noopener noreferrer" class="text-decoration-none">r/statistics</a>
+                        </p>
+                    </div>
+                </div>
             </section>
 
             <!-- How It Works Section -->
@@ -103,23 +128,23 @@
                 <div class="row g-4">
                     <div class="col-md-4">
                         <div class="text-center">
-                            <div class="rounded-circle bg-primary text-white d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px; font-size: 1.5rem; font-weight: bold;">1</div>
+                            <div class="rounded-circle bg-dark text-white d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px; font-size: 1.5rem; font-weight: bold;">1</div>
                             <h3 class="h5">Answer Questions</h3>
                             <p class="text-muted">Work through objective and subjective questions covering key data engineering concepts</p>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="text-center">
-                            <div class="rounded-circle bg-primary text-white d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px; font-size: 1.5rem; font-weight: bold;">2</div>
-                            <h3 class="h5">Get AI Feedback</h3>
-                            <p class="text-muted">Receive instant, detailed evaluation with grades and suggestions for improvement</p>
+                            <div class="rounded-circle bg-dark text-white d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px; font-size: 1.5rem; font-weight: bold;">2</div>
+                            <h3 class="h5">Get AI-Powered Feedback</h3>
+                            <p class="text-muted">AI used responsibly and smartly—providing the right help at the right time to keep the challenge fun while ensuring accurate learning</p>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="text-center">
-                            <div class="rounded-circle bg-primary text-white d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px; font-size: 1.5rem; font-weight: bold;">3</div>
+                            <div class="rounded-circle bg-dark text-white d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px; font-size: 1.5rem; font-weight: bold;">3</div>
                             <h3 class="h5">Learn & Improve</h3>
-                            <p class="text-muted">Use progressive hints and detailed feedback to master concepts and track your progress</p>
+                            <p class="text-muted">Push yourself with challenging questions designed by experts. AI helps when you need it, but never takes away the fun of solving problems yourself</p>
                         </div>
                     </div>
                 </div>
@@ -134,6 +159,14 @@
                             <div class="card-body">
                                 <h3 class="h6 mb-2">SQL & Databases</h3>
                                 <p class="card-text small text-muted mb-0">Master SQL queries, database design, normalization, and optimization techniques</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card border-0 bg-light">
+                            <div class="card-body">
+                                <h3 class="h6 mb-2">Statistics & Analytics</h3>
+                                <p class="card-text small text-muted mb-0">Essential statistical concepts for data engineers: distributions, hypothesis testing, sampling, and data analysis fundamentals</p>
                             </div>
                         </div>
                     </div>
@@ -187,16 +220,16 @@
                     <div class="col-md-6 col-lg-3">
                         <div class="card h-100 border-0 shadow-sm">
                             <div class="card-body text-center">
-                                <div class="mb-3" style="font-size: 2.5rem;">🤖</div>
+                                <div class="mb-3 emoji-icon" style="font-size: 2.5rem;">🧠</div>
                                 <h3 class="h5">AI-Powered Grading</h3>
-                                <p class="card-text text-muted">Get instant, detailed feedback on your answers with AI-powered evaluation</p>
+                                <p class="card-text text-muted">AI used responsibly to keep challenges fun and learning accurate. Expert-designed questions ensure error-free learning while maintaining the right level of difficulty</p>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-6 col-lg-3">
                         <div class="card h-100 border-0 shadow-sm">
                             <div class="card-body text-center">
-                                <div class="mb-3" style="font-size: 2.5rem;">💡</div>
+                                <div class="mb-3 emoji-icon" style="font-size: 2.5rem;">💡</div>
                                 <h3 class="h5">Progressive Hints</h3>
                                 <p class="card-text text-muted">Receive helpful hints when you need them, without spoiling the learning experience</p>
                             </div>
@@ -205,16 +238,16 @@
                     <div class="col-md-6 col-lg-3">
                         <div class="card h-100 border-0 shadow-sm">
                             <div class="card-body text-center">
-                                <div class="mb-3" style="font-size: 2.5rem;">📊</div>
+                                <div class="mb-3 emoji-icon" style="font-size: 2.5rem;">🗄️</div>
                                 <h3 class="h5">Comprehensive Topics</h3>
-                                <p class="card-text text-muted">Cover SQL, databases, ETL, data warehousing, and data pipeline design</p>
+                                <p class="card-text text-muted">Cover SQL, databases, statistics, ETL, data warehousing, and data pipeline design</p>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-6 col-lg-3">
                         <div class="card h-100 border-0 shadow-sm">
                             <div class="card-body text-center">
-                                <div class="mb-3" style="font-size: 2.5rem;">💾</div>
+                                <div class="mb-3 emoji-icon" style="font-size: 2.5rem;">📶</div>
                                 <h3 class="h5">Offline Support</h3>
                                 <p class="card-text text-muted">Practice anywhere with offline-first architecture and local data persistence</p>
                             </div>
@@ -269,6 +302,23 @@
                 </div>
             </section>
 
+            <!-- Community Section -->
+            <section class="mb-5" aria-labelledby="community-heading">
+                <h2 id="community-heading" class="h3 text-center mb-3">Join the Community</h2>
+                <div class="text-center">
+                    <p class="mb-2">
+                        <a href="https://www.reddit.com/r/dataengineering" target="_blank" rel="noopener noreferrer" class="text-decoration-none me-3">r/dataengineering</a> •
+                        <a href="https://www.reddit.com/r/PostgreSQL" target="_blank" rel="noopener noreferrer" class="text-decoration-none me-3">r/PostgreSQL</a> •
+                        <a href="https://www.reddit.com/r/sql" target="_blank" rel="noopener noreferrer" class="text-decoration-none me-3">r/sql</a> •
+                        <a href="https://www.reddit.com/r/devops" target="_blank" rel="noopener noreferrer" class="text-decoration-none me-3">r/devops</a>
+                    </p>
+                    <p class="mb-0">
+                        <a href="https://datastackshow.com/" target="_blank" rel="noopener noreferrer" class="text-decoration-none me-3">Data Stack Show</a> •
+                        <a href="https://www.dataengineeringpodcast.com" target="_blank" rel="noopener noreferrer" class="text-decoration-none">Data Engineering Podcast</a>
+                    </p>
+                </div>
+            </section>
+
             <!-- FAQ Section -->
             <section class="mb-5" aria-labelledby="faq-heading">
                 <h2 id="faq-heading" class="h3 text-center mb-4">Frequently Asked Questions</h2>
@@ -283,7 +333,7 @@
                                 </h3>
                                 <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
                                     <div class="accordion-body">
-                                        Our AI-powered grading system evaluates your answers using advanced language models. For objective questions, it checks your selection against the correct answer. For subjective questions, it analyzes your response for accuracy, completeness, and understanding, providing a grade from 1-10 along with detailed feedback and suggestions for improvement.
+                                        Our AI-powered grading system works invisibly in the background—it's there when you need it, but never gets in the way of the challenge. We use AI responsibly and smartly to keep learning challenging and fun. All questions and answers are expert-designed to ensure error-free learning. For objective questions, it checks your selection against the correct answer. For subjective questions, the AI provides subtle guidance when you need it—just enough help to keep you learning without taking away the fun of solving problems yourself. The challenge remains intact because you learn by pushing yourself a bit more, not by having answers handed to you.
                                     </div>
                                 </div>
                             </div>
@@ -295,7 +345,7 @@
                                 </h3>
                                 <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
                                     <div class="accordion-body">
-                                        Yes, the Data Engineering Challenge platform is completely free to use. You can practice as many questions as you want, access all features including AI grading and progressive hints, and track your progress without any cost.
+                                        Yes, the Data Engineering Challenge platform is completely free to use. You can practice as many questions as you want, access all features including AI-powered grading and progressive hints, and track your progress without any cost.
                                     </div>
                                 </div>
                             </div>
@@ -307,7 +357,7 @@
                                 </h3>
                                 <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
                                     <div class="accordion-body">
-                                        Our quizzes cover a comprehensive range of data engineering topics including SQL and databases, data modeling and ETL processes, data warehousing, big data technologies (Hadoop, Spark), data pipeline design, and data quality and testing. Questions range from foundational concepts to advanced scenarios.
+                                        Our quizzes cover a comprehensive range of data engineering topics including SQL and databases, statistics and analytics (essential for data engineers), data modeling and ETL processes, data warehousing, big data technologies (Hadoop, Spark), data pipeline design, and data quality and testing. All questions are expert-designed to ensure accuracy and maintain the right level of challenge—ranging from foundational concepts to advanced scenarios that keep learning fun and engaging.
                                     </div>
                                 </div>
                             </div>
@@ -319,7 +369,7 @@
                                 </h3>
                                 <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
                                     <div class="accordion-body">
-                                        Each question comes with two progressive hints. The first hint provides a gentle nudge in the right direction, while the second hint offers more specific guidance. If you submit an incorrect answer, the AI may also provide additional suggestions to help you improve your response without giving away the complete answer.
+                                        Each question comes with two progressive hints. The first hint provides a gentle nudge in the right direction, while the second hint offers more specific guidance. If you submit an incorrect answer, our invisible AI may provide a subtle suggestion to help you think through the problem differently—just enough to keep you moving forward without spoiling the challenge or fun. We use AI smartly to maintain the learning challenge while ensuring you get accurate guidance.
                                     </div>
                                 </div>
                             </div>
@@ -355,7 +405,7 @@
                                 </h3>
                                 <div id="faq7" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
                                     <div class="accordion-body">
-                                        Objective questions are multiple-choice questions with predefined answer options. Subjective questions require you to write your own answer, which is then evaluated by our AI system. Both types are designed to test different aspects of your data engineering knowledge and skills.
+                                        Objective questions are multiple-choice questions with predefined answer options. Subjective questions require you to write your own answer, which is then evaluated by our AI-powered grading system. Both types are designed to test different aspects of your data engineering knowledge and skills.
                                     </div>
                                 </div>
                             </div>
@@ -379,7 +429,7 @@
                                 </h3>
                                 <div id="faq9" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
                                     <div class="accordion-body">
-                                        While LeetCode focuses on coding algorithms and data structures, the Data Engineering Challenge is specifically designed for data engineering concepts. Our platform emphasizes SQL, database design, ETL processes, data warehousing, and pipeline architecture—skills essential for data engineers but not covered in traditional coding interview platforms. Additionally, we offer AI-powered evaluation of subjective answers, allowing you to explain concepts in your own words rather than just writing code.
+                                        While LeetCode focuses on coding algorithms and data structures, the Data Engineering Challenge is AI-native LeetCode for data engineers. Our platform emphasizes SQL, database design, ETL processes, data warehousing, and pipeline architecture—skills essential for data engineers but not covered in traditional coding interview platforms. All questions are expert-designed to ensure error-free learning. We use AI responsibly and smartly—it works invisibly in the background, providing the right help at the right time to keep challenges fun while maintaining the learning difficulty. You learn by pushing yourself a bit more, not by having the challenge removed.
                                     </div>
                                 </div>
                             </div>
@@ -391,7 +441,7 @@
                                 </h3>
                                 <div id="faq10" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
                                     <div class="accordion-body">
-                                        Unlike many platforms that only offer multiple-choice questions or require manual review, our platform provides AI-powered evaluation of subjective answers. This means you can explain concepts in your own words and receive instant, detailed feedback. Our progressive hint system helps you learn without giving away answers, and our offline-first architecture ensures you can practice anywhere. We focus specifically on practical data engineering scenarios that mirror real-world challenges you'll face in your career.
+                                        Unlike many platforms that only offer multiple-choice questions or require manual review, our platform provides AI-powered grading of subjective answers. This means you can explain concepts in your own words and receive instant feedback. All questions and answers are expert-designed to ensure error-free learning. We use AI responsibly and smartly—it works invisibly in the background to keep challenges fun while maintaining the right level of difficulty. Our progressive hint system helps you learn without giving away answers, and our offline-first architecture ensures you can practice anywhere. We focus specifically on practical data engineering scenarios that mirror real-world challenges you'll face in your career.
                                     </div>
                                 </div>
                             </div>
@@ -403,7 +453,27 @@
                                 </h3>
                                 <div id="faq11" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
                                     <div class="accordion-body">
-                                        While ChatGPT and Google NotebookLM are excellent tools for learning, they lack the structured assessment and feedback loop that our platform provides. Our platform offers curated questions designed by data engineering experts, standardized evaluation criteria, and a systematic approach to skill assessment. You get consistent, objective grading with detailed feedback on what you got right or wrong, plus a clear way to track your progress over time. Additionally, our progressive hints are specifically designed to guide learning without spoiling answers, something that general AI assistants can't provide in a structured way.
+                                        While ChatGPT and Google NotebookLM are excellent tools for learning, they lack the structured assessment and expert-designed questions that our platform provides. Our platform offers curated challenges designed by data engineering experts, ensuring error-free learning. We use AI responsibly and smartly—it works invisibly in the background to keep challenges fun while maintaining the learning difficulty. You get consistent feedback that helps you learn without taking away the challenge or fun, plus a clear way to track your progress over time. The key difference: you learn by pushing yourself a bit more, with expert-designed questions that ensure accuracy, and AI that helps when needed without making things too easy.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <h3 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq12" aria-expanded="false" aria-controls="faq12">
+                                        Why should I learn SQL in 2026 when AI can generate SQL queries?
+                                    </button>
+                                </h3>
+                                <div id="faq12" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        <p class="mb-2">This is one of the most common questions in 2026! Here's why SQL skills are more valuable than ever:</p>
+                                        <ul class="mb-2">
+                                            <li><strong>AI needs your expertise:</strong> While AI can generate SQL, you need deep understanding to validate, debug, optimize, and ensure queries meet business requirements. AI output often needs refinement for production use.</li>
+                                            <li><strong>Performance matters:</strong> AI doesn't always write efficient queries. Understanding SQL deeply helps you optimize for performance, cost, and scalability—critical in production systems.</li>
+                                            <li><strong>Data modeling & architecture:</strong> SQL knowledge is essential for designing schemas, understanding relationships, and making architectural decisions that AI can't replace.</li>
+                                            <li><strong>Critical thinking:</strong> Writing SQL trains your analytical thinking. You learn to break down complex problems and understand data flows—skills that transcend SQL itself.</li>
+                                            <li><strong>Statistics & analysis:</strong> Our platform also covers statistics, which is essential for data engineers to understand data distributions, sampling, and analytical concepts that inform better data engineering decisions.</li>
+                                        </ul>
+                                        <p class="mb-0"><strong>The bottom line:</strong> In 2026, the best data engineers use AI as a powerful tool, but their deep SQL, statistics, and data engineering knowledge makes them indispensable. AI amplifies your skills—it doesn't replace them.</p>
                                     </div>
                                 </div>
                             </div>
@@ -411,12 +481,16 @@
                     </div>
                 </div>
             </section>
+
         </div>
     </main>
     <br/>
     <footer class="footer mt-auto py-3 bg-light" role="contentinfo">
         <div class="container">
             <div class="row align-items-center">
+                <div class="col-12 text-center mb-3">
+                    <p class="mb-2 small text-muted">AI-native LeetCode for data engineers. Master data engineering skills with expert-designed challenges covering SQL, databases, statistics, ETL, data warehousing, and pipeline design. AI-powered grading used responsibly to keep learning challenging and fun, ensuring error-free learning.</p>
+                </div>
                 <div class="col-12 text-center mb-3">
                     <p class="mb-0">&copy; 2026 Data Engineering Challenge. All rights reserved.</p>
                 </div>
@@ -540,26 +614,26 @@
             if (isCurrent && !quiz.isQuizCompleted()) {
                 questionHtml += `
                     <div class="d-flex justify-content-between align-items-center">
-                        <button class="btn btn-primary submit-btn" onclick="handleSubmit(${question.id})" id="submit-btn-${question.id}" disabled>Submit</button>
+                        <button class="btn btn-dark submit-btn" onclick="handleSubmit(${question.id})" id="submit-btn-${question.id}" disabled>Submit</button>
                         <div>
-                            <button class="btn btn-sm btn-outline-primary hint-btn" onclick="showHint(${question.id}, 0)">Hint 1</button>
-                            <button class="btn btn-sm btn-outline-primary hint-btn" onclick="showHint(${question.id}, 1)">Hint 2</button>
+                            <button class="btn btn-sm btn-outline-dark hint-btn" onclick="showHint(${question.id}, 0)">Hint 1</button>
+                            <button class="btn btn-sm btn-outline-dark hint-btn" onclick="showHint(${question.id}, 1)">Hint 2</button>
                         </div>
                     </div>
                 `;
             }
 
             questionHtml += `
-                        <p class="hint d-none mt-2" id="hint-${question.id}-0">💡 ${question.hints[0]}</p>
-                        <p class="hint d-none mt-2" id="hint-${question.id}-1">💡 ${question.hints[1]}</p>
+                        <p class="hint d-none mt-2" id="hint-${question.id}-0"><span class="emoji-icon">💡</span> ${question.hints[0]}</p>
+                        <p class="hint d-none mt-2" id="hint-${question.id}-1"><span class="emoji-icon">💡</span> ${question.hints[1]}</p>
             `;
 
             if (userAnswer) {
                 questionHtml += `
                     <div class="feedback mt-3">
                         ${userAnswer.isCorrect 
-                            ? `<p class="text-success"><strong>Correct!</strong>${userAnswer.grade !== undefined ? ` Grade: ${userAnswer.grade}/10` : ''}</p>` 
-                            : '<p class="text-danger"><strong>Incorrect</strong></p>'}
+                            ? `<p class="text-dark"><strong><span class="emoji-icon">✓</span> Correct!</strong>${userAnswer.grade !== undefined ? ` Grade: ${userAnswer.grade}/10` : ''}</p>` 
+                            : '<p class="text-dark"><strong><span class="emoji-icon">✗</span> Incorrect</strong></p>'}
                         ${(!isCurrent || userAnswer.isCorrect) && userAnswer.fullEvaluation ? `
                             <div class="full-evaluation mt-2">
                                 <strong>Evaluation:</strong><br>
@@ -571,7 +645,7 @@
                 `;
                 if (isCurrent && userAnswer.isCorrect && quiz.hasNextQuestion()) {
                     questionHtml += `
-                        <button class="btn btn-primary mt-3" onclick="moveToNextQuestion()">Next Question</button>
+                        <button class="btn btn-dark mt-3" onclick="moveToNextQuestion()">Next Question</button>
                     `;
                 }
             }
@@ -615,7 +689,7 @@
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <div id="quiz-progress" class="text-start"></div>
                         <div>
-                            <button class="btn btn-sm btn-danger finish-btn" onclick="handleFinishQuiz()">Finish Quiz</button>
+                            <button class="btn btn-sm btn-outline-dark finish-btn" onclick="handleFinishQuiz()">Finish Quiz</button>
                         </div>
                     </div>
                 `);
@@ -649,7 +723,7 @@
                     <p class="lead">Questions answered: ${quizProgress.answeredQuestions} out of ${quizProgress.totalQuestions}</p>
                     <p class="lead">Correct answers: ${quizProgress.correctAnswers} out of ${quizProgress.answeredQuestions}</p>
                     <p class="lead">Hints used: ${quizProgress.hintCount}</p>
-                    <button class="btn btn-primary btn-lg mt-4" onclick="handleRestartQuiz()">Restart Quiz</button>
+                    <button class="btn btn-dark btn-lg mt-4" onclick="handleRestartQuiz()">Restart Quiz</button>
                 </div>
             `;
         }
@@ -708,9 +782,9 @@
             const progress = quiz.getQuizProgress();
             const progressElement = document.getElementById('quiz-progress');
             if (progressElement) {
-                progressElement.textContent = 
-                    `✔️ ${progress.correctAnswers}/${progress.totalQuestions} ` +
-                    `💡 ${progress.hintCount}`;
+                progressElement.innerHTML = 
+                    `<span class="emoji-icon">✔️</span> ${progress.correctAnswers}/${progress.totalQuestions} ` +
+                    `<span class="emoji-icon">💡</span> ${progress.hintCount}`;
             }
         }
 
