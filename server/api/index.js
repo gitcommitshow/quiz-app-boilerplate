@@ -1,5 +1,5 @@
 import express from 'express';
-import OpenAI from 'openai';
+import { ResilientLLM } from 'resilient-llm';
 import cors from 'cors';
 
 
@@ -12,8 +12,17 @@ const ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS
         : [];
 const IS_DEVELOPMENT = process.env.NODE_ENV !== 'production';
 
-const client = new OpenAI({
-  apiKey: OPENAI_API_KEY
+// Initialize ResilientLLM instances for evaluation and answer generation
+const evaluationLLM = new ResilientLLM({
+  aiService: 'openai',
+  apiKey: OPENAI_API_KEY,
+  model: EVALUATION_MODEL,
+});
+
+const answerLLM = new ResilientLLM({
+  aiService: 'openai',
+  apiKey: OPENAI_API_KEY,
+  model: ANSWER_MODEL,
 });
 
 const app = express();        
@@ -39,7 +48,14 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 async function evaluateAnswer(question, answer) {
-  const prompt = `As an expert in data engineering, please evaluate the following answer to the given question:
+  const conversationHistory = [
+    { 
+      role: 'system', 
+      content: 'You are an expert in data engineering tasked with evaluating answers to technical questions.' 
+    },
+    { 
+      role: 'user', 
+      content: `As an expert in data engineering, please evaluate the following answer to the given question:
 
 Question: ${question}
 
@@ -55,30 +71,28 @@ Grade: [Your grade]
 Correct: [Yes/No]
 Hint: [Your one-line hint]
 
-Evaluation:`;
+Evaluation:` 
+    }
+  ];
 
-const response = await client.chat.completions.create({
-    model: EVALUATION_MODEL,
-    messages: [
-      { role: "system", content: "You are an expert in data engineering tasked with evaluating answers to technical questions." },
-      { role: "user", content: prompt }
-    ],
-  });
-
-  return response.choices[0].message.content;
+  const response = await evaluationLLM.chat(conversationHistory);
+  return response;
 }
 
 async function generateAnswer(question) {
-    const prompt = `As an expert in data engineering, please provide a subjective answer to the following question:\n\nQuestion: ${question}\n\nAnswer:`;
+    const conversationHistory = [
+      { 
+        role: 'system', 
+        content: 'You are an expert in data engineering, covering topics such as databases, SQL, statistics, probability, analytics, and data processing.' 
+      },
+      { 
+        role: 'user', 
+        content: `As an expert in data engineering, please provide a subjective answer to the following question:\n\nQuestion: ${question}\n\nAnswer:` 
+      }
+    ];
     
-    const response = await client.chat.completions.create({
-      model: ANSWER_MODEL,
-      messages: [
-        { role: "system", content: "You are an expert in data engineering, covering topics such as databases, SQL, statistics, probability, analytics, and data processing." },
-        { role: "user", content: prompt }
-      ],
-    });
-    return response.choices[0].message.content;
+    const response = await answerLLM.chat(conversationHistory);
+    return response;
   }
 
 app.get("/", (req, res) => res.send("✅ Quiz API Server is running"));
