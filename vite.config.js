@@ -14,6 +14,28 @@ export default defineConfig(({ command, mode }) => {
   // Note: We can't use 'define' for these files because they're static files
   // copied from publicDir and don't go through Vite's bundler.
   // Instead, we use the same loadEnv mechanism and replace placeholders after build.
+  /** Serves index.html for /question/:slug (dev + vite preview; production uses vercel.json). */
+  const questionRouteFallbackPlugin = () => {
+    const rewriteQuestionRoutes = (req, res, next) => {
+      const raw = req.url || '';
+      const urlPath = raw.split('?')[0];
+      if (urlPath.match(/^\/question\/[^/]+\/?$/)) {
+        const query = raw.includes('?') ? '?' + raw.split('?')[1] : '';
+        req.url = '/index.html' + query;
+      }
+      next();
+    };
+    return {
+      name: 'question-route-fallback',
+      configureServer(server) {
+        server.middlewares.use(rewriteQuestionRoutes);
+      },
+      configurePreviewServer(server) {
+        server.middlewares.use(rewriteQuestionRoutes);
+      },
+    };
+  };
+
   const replaceSiteUrlPlugin = () => {
     return {
       name: 'replace-site-url',
@@ -45,12 +67,28 @@ export default defineConfig(({ command, mode }) => {
 
   return {
     root: 'src',
-    base: './',
+    // Root-relative asset URLs (/assets/...) so JS/CSS load on deep routes like /question/:slug.
+    // A relative base (./) makes the browser request /question/assets/... and 404.
+    base: '/',
     
     // Development server configuration
     server: {
       port: 3000,
       open: true,
+      proxy: {
+        '/evaluate': {
+          target: 'http://localhost:8000',
+          changeOrigin: true,
+        },
+        '^/submit-question$': {
+          target: 'http://localhost:8000',
+          changeOrigin: true,
+        },
+        '/ask': {
+          target: 'http://localhost:8000',
+          changeOrigin: true,
+        },
+      },
     },
 
     // Build configuration
@@ -61,6 +99,7 @@ export default defineConfig(({ command, mode }) => {
       rollupOptions: {
         input: {
           main: resolve(__dirname, 'src/index.html'),
+          'submit-question': resolve(__dirname, 'src/submit-question.html'),
         },
       },
       reportCompressedSize: true,
@@ -77,7 +116,12 @@ export default defineConfig(({ command, mode }) => {
       'process.env.VITE_ANSWER_EVALUATION_API': JSON.stringify(
         isProduction 
           ? env.VITE_ANSWER_EVALUATION_API 
-          : 'http://localhost:8000/evaluate'
+          : '/evaluate'
+      ),
+      'process.env.VITE_QUESTION_SUBMIT_API': JSON.stringify(
+        isProduction
+          ? env.VITE_QUESTION_SUBMIT_API
+          : '/submit-question'
       )
     },
 
@@ -85,6 +129,6 @@ export default defineConfig(({ command, mode }) => {
         devSourcemap: true, // Enable CSS sourcemaps in development
     },
     
-    plugins: [replaceSiteUrlPlugin()]
+    plugins: [questionRouteFallbackPlugin(), replaceSiteUrlPlugin()]
   };
 });

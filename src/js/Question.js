@@ -6,6 +6,8 @@ export class Question {
 
     constructor(data) {
         this.id = data.id;
+        /** @type {string} Stable URL segment for /question/:slug deep links */
+        this.slug = data.slug || '';
         this.question = data.question;
         this.type = data.type; // 'objective' or 'subjective'
         this.hints = data.hints || [];
@@ -25,6 +27,7 @@ export class Question {
     toJSON() {
         const json = {
             id: this.id,
+            slug: this.slug,
             question: this.question,
             type: this.type,
             hints: this.hints,
