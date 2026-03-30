@@ -1,6 +1,17 @@
 import express from 'express';
 import { ResilientLLM } from 'resilient-llm';
 import cors from 'cors';
+import fs from 'fs/promises';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import {
+  buildContributorMarkdown,
+  isValidSlug,
+  markdownFilename,
+} from '../../lib/questionToMarkdown.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
@@ -160,6 +171,155 @@ app.post('/ask', async (req, res) => {
       res.status(500).json({ error: "An error occurred while processing the question" });
     }
   });
+
+/**
+ * POST /submit-question
+ * Submit a new question for review
+ * @param {object} questionData - The question data to submit
+ * @returns {object} - Success message and submitted question
+ * @example
+ * curl -X POST http://localhost:8000/submit-question -H "Content-Type: application/json" -d '{"type": "objective", "question": "What is SQL?", "options": ["A", "B", "C"], "expectedAnswer": "A", "hints": ["Hint 1", "Hint 2"]}'
+ */
+app.post('/submit-question', async (req, res) => {
+  console.log('Received question submission:', req.body);
+  const questionData = req.body;
+
+  // Validate required fields
+  if (!questionData.type || !questionData.question) {
+    return res.status(400).json({ error: "Question type and question text are required" });
+  }
+
+  if (questionData.type !== 'objective' && questionData.type !== 'subjective') {
+    return res.status(400).json({ error: "Question type must be 'objective' or 'subjective'" });
+  }
+
+  // Validate objective question structure
+  if (questionData.type === 'objective') {
+    if (!questionData.options || !Array.isArray(questionData.options) || questionData.options.length < 2) {
+      return res.status(400).json({ error: "Objective questions must have at least 2 options" });
+    }
+    if (!questionData.expectedAnswer) {
+      return res.status(400).json({ error: "Objective questions must have an expectedAnswer" });
+    }
+  }
+
+  // Validate subjective question structure
+  if (questionData.type === 'subjective') {
+    if (!questionData.expectedAnswer) {
+      return res.status(400).json({ error: "Subjective questions must have an expectedAnswer" });
+    }
+  }
+
+  // Validate hints
+  if (!questionData.hints || !Array.isArray(questionData.hints) || questionData.hints.length < 2) {
+    return res.status(400).json({ error: "Questions must have at least 2 hints" });
+  }
+
+  const slug = typeof questionData.slug === 'string' ? questionData.slug.trim() : '';
+  if (!slug || !isValidSlug(slug)) {
+    return res.status(400).json({
+      error:
+        "A URL slug is required: use lowercase letters, digits, and hyphens only (e.g. my-question-title)",
+    });
+  }
+
+  let requestedId = questionData.questionId ?? questionData.id;
+  if (requestedId !== undefined && requestedId !== null && requestedId !== '') {
+    const n = typeof requestedId === 'string' ? parseInt(requestedId, 10) : requestedId;
+    if (!Number.isInteger(n) || n < 1) {
+      return res.status(400).json({ error: "Optional question id must be a positive integer" });
+    }
+    requestedId = n;
+  } else {
+    requestedId = undefined;
+  }
+
+  try {
+    // Read existing submitted questions
+    const submittedQuestionsPath = path.join(__dirname, '..', 'submitted-questions.json');
+    let submittedQuestions = [];
+    
+    try {
+      const fileContent = await fs.readFile(submittedQuestionsPath, 'utf-8');
+      submittedQuestions = JSON.parse(fileContent);
+    } catch (error) {
+      // File doesn't exist yet, start with empty array
+      if (error.code !== 'ENOENT') {
+        throw error;
+      }
+    }
+
+    // Generate new question ID (highest existing ID + 1, or start from 1000 to avoid conflicts)
+    const maxId = submittedQuestions.length > 0 
+      ? Math.max(...submittedQuestions.map(q => q.id || 0))
+      : 999;
+    const autoId = maxId >= 1000 ? maxId + 1 : 1000;
+    const newId = requestedId !== undefined ? requestedId : autoId;
+
+    // Create question object
+    const newQuestion = {
+      id: newId,
+      slug,
+      version: 1,
+      type: questionData.type,
+      question: questionData.question,
+      hints: questionData.hints,
+      expectedAnswer: questionData.expectedAnswer,
+      labels: questionData.labels || [],
+      submittedAt: new Date().toISOString(),
+      ...(questionData.type === 'objective' 
+        ? { options: questionData.options }
+        : {
+            keywords: questionData.keywords || [],
+            minKeywords: questionData.minKeywords || 0,
+            maxLength: questionData.maxLength || 0
+          })
+    };
+
+    let contributorMarkdown;
+    try {
+      contributorMarkdown = buildContributorMarkdown({
+        id: newId,
+        slug,
+        type: questionData.type,
+        version: 1,
+        labels: questionData.labels || [],
+        question: questionData.question,
+        hints: questionData.hints,
+        options: questionData.type === 'objective' ? questionData.options : undefined,
+        expectedAnswer: questionData.expectedAnswer,
+        keywords: questionData.type === 'subjective' ? questionData.keywords || [] : undefined,
+        minKeywords: questionData.type === 'subjective' ? questionData.minKeywords ?? 0 : undefined,
+        maxLength: questionData.type === 'subjective' ? questionData.maxLength ?? 0 : undefined,
+      });
+    } catch (e) {
+      console.error('Markdown generation failed:', e);
+      return res.status(400).json({ error: e.message || 'Could not build contributor Markdown' });
+    }
+
+    // Add to submitted questions
+    submittedQuestions.push(newQuestion);
+
+    // Write back to file
+    await fs.writeFile(
+      submittedQuestionsPath,
+      JSON.stringify(submittedQuestions, null, 2),
+      'utf-8'
+    );
+
+    console.log(`Question ${newId} submitted successfully`);
+    res.json({
+      success: true,
+      message: "Question submitted successfully. Use the Markdown below to open a pull request.",
+      question: newQuestion,
+      markdown: contributorMarkdown,
+      markdownFilename: markdownFilename(slug),
+    });
+  } catch (error) {
+    console.error('Error submitting question:', error);
+    res.status(500).json({ error: "An error occurred while submitting the question" });
+  }
+});
 
 app.listen(API_SERVER_PORT, () => {
   console.log(`Quiz API Server running at http://localhost:${API_SERVER_PORT}`);
