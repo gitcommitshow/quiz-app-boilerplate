@@ -29,7 +29,7 @@
     "vite": "^7.3.1"
   },
   "dependencies": {
-    "@rudderstack/analytics-js": "^3.31.1",
+    "@rudderstack/analytics-js": "^3.31.0",
     "bootstrap": "^5.3.8",
     "dompurify": "^3.3.3",
     "gray-matter": "^4.0.3",
