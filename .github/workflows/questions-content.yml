@@ -1,0 +1,23 @@
+# Validates question Markdown and compiles to questions.json (same as build pre-step).
+name: Question content validation
+
+on:
+  pull_request:
+    paths:
+      - 'content/questions/**'
+      - 'scripts/compile-questions.js'
+      - 'package.json'
+      - 'package-lock.json'
+    workflow_dispatch:
+
+jobs:
+  compile:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - run: npm ci
+      - run: npm run compile:questions
