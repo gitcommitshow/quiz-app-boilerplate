@@ -5,8 +5,12 @@
   "main": "index.html",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
+    "dev": "npm run dev:api & npm run dev:frontend",
+    "dev:frontend": "vite",
+    "dev:api": "node server/api/index.js",
+    "compile:questions": "node scripts/compile-questions.js",
+    "test": "node --test test/",
+    "build": "npm run compile:questions && vite build",
     "preview": "vite preview",
     "start": "npm run build && npm run preview"
   },
@@ -18,14 +22,19 @@
   ],
   "author": "Your Name",
   "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  },
   "devDependencies": {
-    "vite": "^6.0.7"
+    "vite": "^7.3.1"
   },
   "dependencies": {
-    "@rudderstack/analytics-js": "^3.16.1",
-    "bootstrap": "^5.3.3",
-    "dompurify": "^3.2.3",
-    "marked": "^15.0.6",
-    "mermaid": "^11.4.1"
+    "@rudderstack/analytics-js": "^3.31.0",
+    "bootstrap": "^5.3.8",
+    "dompurify": "^3.3.3",
+    "gray-matter": "^4.0.3",
+    "marked": "^17.0.5",
+    "mermaid": "^11.13.0",
+    "yaml": "^2.8.3"
   }
 }

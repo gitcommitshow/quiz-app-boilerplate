@@ -2,6 +2,14 @@ import { Question } from './Question.js';
 import { UserAnswer } from './UserAnswer.js';
 
 export const DEFAULT_ANSWER_EVALUATION_API = process.env.VITE_ANSWER_EVALUATION_API || 'http://localhost:8000/evaluate';
+
+/**
+ * URL for the compiled question set, anchored to Vite `base` (site root), not the current pathname.
+ * Relative `fetch('questions.json')` breaks on `/question/:slug` (resolves to `/question/questions.json`).
+ */
+function getQuestionsJsonUrl() {
+    return new URL('questions.json', new URL(import.meta.env.BASE_URL, window.location.origin)).href;
+}
 /**
  * Represents a Quiz with questions, user answers, and evaluation functionality.
  * @class
@@ -56,13 +64,14 @@ export class Quiz {
     }
 
     /**
-     * Loads questions from the server and syncs with local storage.
-     * @async
-     * @returns {Promise<void>}
+     * Loads questions from the server and syncs with IndexedDB.
+     * @param {Object} [options]
+     * @param {boolean} [options.skipProgressionIndex] - If true, do not set currentQuestionIndex (used for /question/:slug view only).
      */
-    async loadQuestions() {
+    async loadQuestions(options = {}) {
+        const skipProgressionIndex = options.skipProgressionIndex === true;
         try {
-            const response = await fetch('questions.json');
+            const response = await fetch(getQuestionsJsonUrl());
             if (!response.ok) throw new Error('Network response was not ok');
             const remoteQuestions = await response.json();
             this.questions = await Question.sync(remoteQuestions);
@@ -81,10 +90,12 @@ export class Quiz {
             this.userAnswers.get(answer.questionId).push(answer);
         });
 
-        // Set current question index to the first unanswered question
-        this.currentQuestionIndex = this.questions.findIndex(q => !this.userAnswers.has(q.id));
-        if (this.currentQuestionIndex === -1) {
-            this.currentQuestionIndex = this.questions.length; // All questions answered
+        if (!skipProgressionIndex) {
+            // Set current question index to the first unanswered question
+            this.currentQuestionIndex = this.questions.findIndex(q => !this.userAnswers.has(q.id));
+            if (this.currentQuestionIndex === -1) {
+                this.currentQuestionIndex = this.questions.length; // All questions answered
+            }
         }
     }
 
@@ -200,8 +211,17 @@ export class Quiz {
      */
     async checkAnswer(question, userAnswerText) {
         if (question.type === 'objective') {
-            const expectedAnswer = question.expectedAnswer?.toLowerCase();
-            return { isCorrect: userAnswerText.trim().toLowerCase() === expectedAnswer, confidenceScore: 1 };
+            const norm = (s) =>
+                String(s || '')
+                    .replace(/\*\*([^*]+)\*\*/g, '$1')
+                    .replace(/\*([^*]+)\*/g, '$1')
+                    .replace(/`([^`]+)`/g, '$1')
+                    .trim()
+                    .toLowerCase();
+            return {
+                isCorrect: norm(userAnswerText) === norm(question.expectedAnswer),
+                confidenceScore: 1,
+            };
         } else if (question.type === 'subjective') {
             return await this.evaluateSubjectiveAnswer(question, userAnswerText);
         }

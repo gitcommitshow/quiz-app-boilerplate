@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en" class="h-100">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submit a Question - Data Engineering Challenge</title>
+    <meta name="description" content="Submit your own data engineering questions to help expand our question bank. Contribute SQL, database, statistics, ETL, and data pipeline questions.">
+    <meta name="keywords" content="submit question, contribute question, data engineering question, SQL question submission">
+    <meta name="author" content="Data Engineering Challenge">
+    <link rel="canonical" href="" id="canonical-url">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="" id="og-url">
+    <meta property="og:title" content="Submit a Question - Data Engineering Challenge">
+    <meta property="og:description" content="Submit your own data engineering questions to help expand our question bank.">
+    <meta property="og:image" content="" id="og-image">
+    
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="" id="twitter-url">
+    <meta name="twitter:title" content="Submit a Question - Data Engineering Challenge">
+    <meta name="twitter:description" content="Submit your own data engineering questions to help expand our question bank.">
+    <meta name="twitter:image" content="" id="twitter-image">
+    
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎯</text></svg>">
+    
+    <script type="module">
+        // Inject site URL from environment variable or use current origin
+        const siteUrl = import.meta.env.VITE_SITE_URL || window.location.origin;
+        document.getElementById('canonical-url').setAttribute('href', siteUrl + '/submit-question.html');
+        document.getElementById('og-url').setAttribute('content', siteUrl + '/submit-question.html');
+        document.getElementById('og-image').setAttribute('content', siteUrl + '/images/og-image.png');
+        document.getElementById('twitter-url').setAttribute('content', siteUrl + '/submit-question.html');
+        document.getElementById('twitter-image').setAttribute('content', siteUrl + '/images/og-image.png');
+    </script>
+    <!-- Google Fonts - Inter for better readability -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Load Bootstrap CSS -->
+    <script type="module">
+        import 'bootstrap/dist/css/bootstrap.min.css';
+    </script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="d-flex flex-column h-100">
+    <main class="flex-shrink-0">
+        <div class="container mt-5">
+            <!-- Navigation -->
+            <nav class="mb-4">
+                <a href="/" class="btn btn-outline-dark">
+                    <span class="emoji-icon">←</span> Back to Quiz
+                </a>
+            </nav>
+
+            <!-- Hero Section -->
+            <header class="text-center mb-5">
+                <h1 class="display-4 mb-4"><span class="emoji-icon">📝</span> Submit a Question</h1>
+                <p class="lead mb-2">Help expand our question bank</p>
+                <p class="text-muted">Share your data engineering questions with the community</p>
+            </header>
+
+            <!-- Submit Question Section -->
+            <section class="mb-5" aria-labelledby="submit-question-heading">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-dark text-white">
+                        <h2 id="submit-question-heading" class="h5 mb-0">Question Submission Form</h2>
+                    </div>
+                    <div class="card-body">
+                        <p class="text-muted mb-4">Have a great data engineering question? Submit it for review and help expand our question bank!</p>
+                        <form id="submit-question-form">
+                            <div class="mb-3">
+                                <label for="question-type" class="form-label">Question Type <span class="text-danger">*</span></label>
+                                <select class="form-select" id="question-type" required>
+                                    <option value="">Select type...</option>
+                                    <option value="objective">Objective (Multiple Choice)</option>
+                                    <option value="subjective">Subjective (Open-ended)</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="question-slug" class="form-label">URL slug <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="question-slug" required
+                                    pattern="[a-z0-9]+(?:-[a-z0-9]+)*"
+                                    maxlength="120"
+                                    autocomplete="off"
+                                    placeholder="e.g. spark-partitioning-basics">
+                                <small class="form-text text-muted">Used as the file name <code>content/questions/&lt;slug&gt;.md</code> in your pull request. Lowercase letters, digits, and hyphens only.</small>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="question-id" class="form-label">Question ID (optional)</label>
+                                <input type="number" class="form-control" id="question-id" min="1" step="1"
+                                    placeholder="Leave blank to auto-assign">
+                                <small class="form-text text-muted">Stable id in the compiled question bank. Leave blank unless you coordinate with maintainers.</small>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="question-text" class="form-label">Question Text <span class="text-danger">*</span></label>
+                                <textarea class="form-control" id="question-text" rows="4" required placeholder="Enter your question here. You can use Markdown formatting and Mermaid diagrams."></textarea>
+                                <small class="form-text text-muted">Supports Markdown and Mermaid diagrams</small>
+                            </div>
+
+                            <div id="objective-fields" class="d-none">
+                                <div class="mb-3">
+                                    <label class="form-label">Options <span class="text-danger">*</span></label>
+                                    <div id="options-container">
+                                        <div class="input-group mb-2">
+                                            <input type="text" class="form-control option-input" placeholder="Option 1" required>
+                                            <button type="button" class="btn btn-outline-danger" onclick="removeOption(this)">Remove</button>
+                                        </div>
+                                        <div class="input-group mb-2">
+                                            <input type="text" class="form-control option-input" placeholder="Option 2" required>
+                                            <button type="button" class="btn btn-outline-danger" onclick="removeOption(this)">Remove</button>
+                                        </div>
+                                    </div>
+                                    <button type="button" class="btn btn-sm btn-outline-dark" onclick="addOption()">+ Add Option</button>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="expected-answer-objective" class="form-label">Expected Answer <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="expected-answer-objective" placeholder="Enter the correct answer (must match one of the options exactly)">
+                                </div>
+                            </div>
+
+                            <div id="subjective-fields" class="d-none">
+                                <div class="mb-3">
+                                    <label for="expected-answer-subjective" class="form-label">Expected Answer <span class="text-danger">*</span></label>
+                                    <textarea class="form-control" id="expected-answer-subjective" rows="3" placeholder="Enter the expected answer or a sample correct answer"></textarea>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4 mb-3">
+                                        <label for="keywords" class="form-label">Keywords (comma-separated)</label>
+                                        <input type="text" class="form-control" id="keywords" placeholder="keyword1, keyword2, keyword3">
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label for="min-keywords" class="form-label">Minimum Keywords</label>
+                                        <input type="number" class="form-control" id="min-keywords" min="0" value="0">
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label for="max-length" class="form-label">Max Length</label>
+                                        <input type="number" class="form-control" id="max-length" min="0" value="0">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Hints <span class="text-danger">*</span></label>
+                                <div id="hints-container">
+                                    <div class="input-group mb-2">
+                                        <input type="text" class="form-control hint-input" placeholder="Hint 1" required>
+                                        <button type="button" class="btn btn-outline-danger" onclick="removeHint(this)">Remove</button>
+                                    </div>
+                                    <div class="input-group mb-2">
+                                        <input type="text" class="form-control hint-input" placeholder="Hint 2" required>
+                                        <button type="button" class="btn btn-outline-danger" onclick="removeHint(this)">Remove</button>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn btn-sm btn-outline-dark" onclick="addHint()">+ Add Hint</button>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="labels" class="form-label">Labels (comma-separated, optional)</label>
+                                <input type="text" class="form-control" id="labels" placeholder="sql, database, statistics">
+                                <small class="form-text text-muted">Tags to categorize the question</small>
+                            </div>
+
+                            <div id="submit-feedback" class="alert d-none" role="alert"></div>
+
+                            <div id="pr-markdown-section" class="card border-success mb-4 d-none">
+                                <div class="card-header bg-success text-white">
+                                    <h2 class="h6 mb-0">Next: add this file via pull request</h2>
+                                </div>
+                                <div class="card-body">
+                                    <p class="mb-2">Save the generated Markdown as <code>content/questions/<span id="pr-filename-label">—</span></code> in the project repo, then open a PR. Locally, run <code>npm run compile:questions</code> to verify it compiles.</p>
+                                    <div class="d-flex gap-2 mb-3 flex-wrap">
+                                        <button type="button" class="btn btn-outline-dark" id="copy-markdown-btn">Copy Markdown</button>
+                                        <button type="button" class="btn btn-outline-dark" id="download-markdown-btn">Download .md</button>
+                                    </div>
+                                    <pre id="pr-markdown-preview" class="bg-light p-3 rounded small mb-0" style="max-height: 18rem; overflow: auto;" aria-label="Generated Markdown"></pre>
+                                </div>
+                            </div>
+
+                            <div class="d-flex gap-2">
+                                <button type="submit" class="btn btn-dark" id="submit-question-btn">
+                                    <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                                    Submit Question
+                                </button>
+                                <a href="/" class="btn btn-outline-secondary">Cancel</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Guidelines Section -->
+            <section class="mb-5" aria-labelledby="guidelines-heading">
+                <div class="card border-0 bg-light">
+                    <div class="card-body">
+                        <h2 id="guidelines-heading" class="h5 mb-3">Submission Guidelines</h2>
+                        <ul class="mb-0">
+                            <li>Questions should be relevant to data engineering topics (SQL, databases, statistics, ETL, data warehousing, etc.)</li>
+                            <li>Ensure questions are clear, well-formatted, and have correct answers</li>
+                            <li>Provide at least 2 hints that progressively help users understand the concept</li>
+                            <li>For objective questions, provide at least 2 options with one correct answer</li>
+                            <li>For subjective questions, provide keywords and expected answer format</li>
+                            <li>You can use Markdown formatting and Mermaid diagrams in question text</li>
+                            <li>After submitting, copy or download the Markdown file and open a pull request that adds <code>content/questions/&lt;your-slug&gt;.md</code></li>
+                            <li>All submissions will be reviewed before being merged into the question bank</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+    <br/>
+    <footer class="footer mt-auto py-3 bg-light" role="contentinfo">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-12 text-center mb-3">
+                    <p class="mb-2 small text-muted">AI-native LeetCode for data engineers. Master data engineering skills with expert-designed challenges covering SQL, databases, statistics, ETL, data warehousing, and pipeline design. AI-powered grading used responsibly to keep learning challenging and fun, ensuring error-free learning.</p>
+                </div>
+                <div class="col-12 text-center mb-3">
+                    <p class="mb-0">&copy; 2026 Data Engineering Challenge. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script type="module">
+        import { RudderAnalytics } from '@rudderstack/analytics-js';
+        const rudderAnalytics = new RudderAnalytics();
+        rudderAnalytics.load(process.env.VITE_ANALYTICS_WRITE_KEY, process.env.VITE_ANALYTICS_DATA_PLANE_URL, {});
+
+        import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+
+        // Question submission form handlers
+        // Keep submit API configurable while defaulting to Vite dev proxy path.
+        const QUESTION_SUBMIT_API = process.env.VITE_QUESTION_SUBMIT_API || import.meta.env.VITE_QUESTION_SUBMIT_API || '/submit-question';
+
+        /** Last API-generated Markdown for copy/download (set on successful submit). */
+        let lastContributorMarkdown = '';
+        let lastMarkdownFilename = '';
+
+        function addOption() {
+            const container = document.getElementById('options-container');
+            const optionCount = container.children.length;
+            const div = document.createElement('div');
+            div.className = 'input-group mb-2';
+            div.innerHTML = `
+                <input type="text" class="form-control option-input" placeholder="Option ${optionCount + 1}" required>
+                <button type="button" class="btn btn-outline-danger" onclick="removeOption(this)">Remove</button>
+            `;
+            container.appendChild(div);
+        }
+
+        function removeOption(button) {
+            const container = document.getElementById('options-container');
+            if (container.children.length > 2) {
+                button.closest('.input-group').remove();
+            } else {
+                alert('At least 2 options are required');
+            }
+        }
+
+        function addHint() {
+            const container = document.getElementById('hints-container');
+            const hintCount = container.children.length;
+            const div = document.createElement('div');
+            div.className = 'input-group mb-2';
+            div.innerHTML = `
+                <input type="text" class="form-control hint-input" placeholder="Hint ${hintCount + 1}" required>
+                <button type="button" class="btn btn-outline-danger" onclick="removeHint(this)">Remove</button>
+            `;
+            container.appendChild(div);
+        }
+
+        function removeHint(button) {
+            const container = document.getElementById('hints-container');
+            if (container.children.length > 2) {
+                button.closest('.input-group').remove();
+            } else {
+                alert('At least 2 hints are required');
+            }
+        }
+
+        function toggleQuestionTypeFields() {
+            const questionType = document.getElementById('question-type').value;
+            const objectiveFields = document.getElementById('objective-fields');
+            const subjectiveFields = document.getElementById('subjective-fields');
+            
+            if (questionType === 'objective') {
+                objectiveFields.classList.remove('d-none');
+                subjectiveFields.classList.add('d-none');
+            } else if (questionType === 'subjective') {
+                objectiveFields.classList.add('d-none');
+                subjectiveFields.classList.remove('d-none');
+            } else {
+                objectiveFields.classList.add('d-none');
+                subjectiveFields.classList.add('d-none');
+            }
+        }
+
+        async function handleQuestionSubmit(event) {
+            event.preventDefault();
+            const submitBtn = document.getElementById('submit-question-btn');
+            const spinner = submitBtn.querySelector('.spinner-border');
+            const feedback = document.getElementById('submit-feedback');
+            const prSection = document.getElementById('pr-markdown-section');
+            
+            // Disable submit button and show spinner
+            submitBtn.disabled = true;
+            spinner.classList.remove('d-none');
+            feedback.classList.add('d-none');
+            prSection.classList.add('d-none');
+
+            try {
+                const questionType = document.getElementById('question-type').value;
+                const questionText = document.getElementById('question-text').value;
+                const slug = document.getElementById('question-slug').value.trim();
+                if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) {
+                    throw new Error('URL slug must use lowercase letters, digits, and hyphens only (e.g. my-question-title)');
+                }
+                const idRaw = document.getElementById('question-id').value.trim();
+                if (idRaw) {
+                    const n = parseInt(idRaw, 10);
+                    if (!Number.isInteger(n) || n < 1) {
+                        throw new Error('Optional question id must be a positive whole number');
+                    }
+                }
+                
+                // Collect options for objective questions
+                let options = [];
+                if (questionType === 'objective') {
+                    const optionInputs = document.querySelectorAll('.option-input');
+                    options = Array.from(optionInputs).map(input => input.value.trim()).filter(v => v);
+                    if (options.length < 2) {
+                        throw new Error('At least 2 options are required for objective questions');
+                    }
+                }
+
+                // Collect hints
+                const hintInputs = document.querySelectorAll('.hint-input');
+                const hints = Array.from(hintInputs).map(input => input.value.trim()).filter(v => v);
+                if (hints.length < 2) {
+                    throw new Error('At least 2 hints are required');
+                }
+
+                // Collect expected answer
+                const expectedAnswer = questionType === 'objective' 
+                    ? document.getElementById('expected-answer-objective').value.trim()
+                    : document.getElementById('expected-answer-subjective').value.trim();
+                
+                if (!expectedAnswer) {
+                    throw new Error('Expected answer is required');
+                }
+
+                // Validate objective answer matches an option
+                if (questionType === 'objective' && !options.includes(expectedAnswer)) {
+                    throw new Error('Expected answer must match one of the options exactly');
+                }
+
+                // Collect optional fields
+                const labelsInput = document.getElementById('labels').value.trim();
+                const labels = labelsInput ? labelsInput.split(',').map(l => l.trim()).filter(l => l) : [];
+
+                // Build question data
+                const questionData = {
+                    slug,
+                    type: questionType,
+                    question: questionText,
+                    hints: hints,
+                    expectedAnswer: expectedAnswer,
+                    labels: labels
+                };
+                if (idRaw) {
+                    questionData.questionId = parseInt(idRaw, 10);
+                }
+
+                if (questionType === 'objective') {
+                    questionData.options = options;
+                } else {
+                    const keywordsInput = document.getElementById('keywords').value.trim();
+                    const keywords = keywordsInput ? keywordsInput.split(',').map(k => k.trim()).filter(k => k) : [];
+                    questionData.keywords = keywords;
+                    questionData.minKeywords = parseInt(document.getElementById('min-keywords').value) || 0;
+                    questionData.maxLength = parseInt(document.getElementById('max-length').value) || 0;
+                }
+
+                // Submit to API
+                const response = await fetch(QUESTION_SUBMIT_API, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(questionData)
+                });
+
+                const result = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(result.error || 'Failed to submit question');
+                }
+
+                // Show success message
+                feedback.classList.remove('d-none', 'alert-danger');
+                feedback.classList.add('alert-success');
+                feedback.textContent = result.message || 'Question submitted successfully! Thank you for your contribution.';
+
+                if (result.markdown && typeof result.markdown === 'string') {
+                    lastContributorMarkdown = result.markdown;
+                    lastMarkdownFilename = result.markdownFilename || `${slug}.md`;
+                    document.getElementById('pr-filename-label').textContent = lastMarkdownFilename;
+                    document.getElementById('pr-markdown-preview').textContent = result.markdown;
+                    prSection.classList.remove('d-none');
+                } else {
+                    lastContributorMarkdown = '';
+                    lastMarkdownFilename = '';
+                }
+                
+                // Reset form
+                document.getElementById('submit-question-form').reset();
+                toggleQuestionTypeFields();
+                
+                // Track submission
+                rudderAnalytics.ready(() => {
+                    rudderAnalytics.track('question submitted', {
+                        question_type: questionType,
+                        question_id: result.question?.id
+                    });
+                });
+            } catch (error) {
+                console.error('Error submitting question:', error);
+                feedback.classList.remove('d-none', 'alert-success');
+                feedback.classList.add('alert-danger');
+                feedback.textContent = error.message === 'Failed to fetch'
+                    ? 'Could not reach the API server. In development, make sure the backend API is running on port 8000.'
+                    : (error.message || 'An error occurred while submitting the question. Please try again.');
+            } finally {
+                submitBtn.disabled = false;
+                spinner.classList.add('d-none');
+            }
+        }
+
+        // Initialize question submission form
+        document.addEventListener('DOMContentLoaded', () => {
+            rudderAnalytics.ready(() => {
+                console.log("The RudderStack JavaScript SDK is ready.");
+                rudderAnalytics.page();
+            });
+
+            document.getElementById('question-type').addEventListener('change', toggleQuestionTypeFields);
+            document.getElementById('submit-question-form').addEventListener('submit', handleQuestionSubmit);
+
+            document.getElementById('copy-markdown-btn').addEventListener('click', async () => {
+                if (!lastContributorMarkdown) return;
+                try {
+                    await navigator.clipboard.writeText(lastContributorMarkdown);
+                    const btn = document.getElementById('copy-markdown-btn');
+                    const prev = btn.textContent;
+                    btn.textContent = 'Copied!';
+                    setTimeout(() => { btn.textContent = prev; }, 2000);
+                } catch (e) {
+                    console.error('Clipboard failed:', e);
+                    alert('Could not copy to clipboard. Select the text in the preview and copy manually.');
+                }
+            });
+
+            document.getElementById('download-markdown-btn').addEventListener('click', () => {
+                if (!lastContributorMarkdown || !lastMarkdownFilename) return;
+                const blob = new Blob([lastContributorMarkdown], { type: 'text/markdown;charset=utf-8' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = lastMarkdownFilename;
+                a.rel = 'noopener';
+                a.click();
+                URL.revokeObjectURL(url);
+            });
+        });
+
+        // Expose helper functions to window
+        window.addOption = addOption;
+        window.removeOption = removeOption;
+        window.addHint = addHint;
+        window.removeHint = removeHint;
+    </script>
+</body>
+</html>
+
+
