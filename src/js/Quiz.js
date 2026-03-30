@@ -211,8 +211,17 @@ export class Quiz {
      */
     async checkAnswer(question, userAnswerText) {
         if (question.type === 'objective') {
-            const expectedAnswer = question.expectedAnswer?.toLowerCase();
-            return { isCorrect: userAnswerText.trim().toLowerCase() === expectedAnswer, confidenceScore: 1 };
+            const norm = (s) =>
+                String(s || '')
+                    .replace(/\*\*([^*]+)\*\*/g, '$1')
+                    .replace(/\*([^*]+)\*/g, '$1')
+                    .replace(/`([^`]+)`/g, '$1')
+                    .trim()
+                    .toLowerCase();
+            return {
+                isCorrect: norm(userAnswerText) === norm(question.expectedAnswer),
+                confidenceScore: 1,
+            };
         } else if (question.type === 'subjective') {
             return await this.evaluateSubjectiveAnswer(question, userAnswerText);
         }

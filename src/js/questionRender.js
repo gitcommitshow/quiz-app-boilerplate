@@ -1,3 +1,20 @@
+/** Renders inline Markdown (bold, code, etc.) using the same marked instance as the question body. */
+function renderInline(marked, text) {
+    if (!text) return '';
+    if (typeof marked.parseInline === 'function') {
+        return marked.parseInline(text);
+    }
+    return marked.parse(text);
+}
+
+/** Escapes a string for use in a double-quoted HTML attribute. */
+function escapeAttr(s) {
+    return String(s)
+        .replace(/&/g, '&amp;')
+        .replace(/"/g, '&quot;')
+        .replace(/</g, '&lt;');
+}
+
 /**
  * Builds HTML for a single question card (shared by main quiz and /question/:slug view).
  * @param {Object} question - Question model instance
@@ -36,16 +53,19 @@ export function buildQuestionCardHTML(question, userAnswer, marked, options) {
     if (question.type === 'objective') {
         questionHtml += question.options
             .map(
-                (option, index) => `
+                (option, index) => {
+                    const letter = String.fromCharCode(65 + index);
+                    return `
                     <div class="form-check">
                         <input class="form-check-input" type="radio" id="option-${question.id}-${index}" 
-                            name="answer-${question.id}" value="${option}"
+                            name="answer-${question.id}" value="${escapeAttr(option)}"
                             ${userAnswer && userAnswer.answer === option ? 'checked' : ''}
                             ${!isCurrent ? 'disabled' : ''}
                             onchange="${toggleFn}(${question.id})">
-                        <label class="form-check-label" for="option-${question.id}-${index}">${option}</label>
+                        <label class="form-check-label" for="option-${question.id}-${index}">${letter}. ${renderInline(marked, option)}</label>
                     </div>
-                `
+                `;
+                }
             )
             .join('');
     } else {
@@ -72,8 +92,8 @@ export function buildQuestionCardHTML(question, userAnswer, marked, options) {
     }
 
     questionHtml += `
-                        <p class="hint d-none mt-2" id="hint-${question.id}-0"><span class="emoji-icon">💡</span> ${hint0}</p>
-                        <p class="hint d-none mt-2" id="hint-${question.id}-1"><span class="emoji-icon">💡</span> ${hint1}</p>
+                        <div class="hint d-none mt-2" id="hint-${question.id}-0"><span class="emoji-icon">💡</span> ${renderInline(marked, hint0)}</div>
+                        <div class="hint d-none mt-2" id="hint-${question.id}-1"><span class="emoji-icon">💡</span> ${renderInline(marked, hint1)}</div>
             `;
 
     if (userAnswer) {
