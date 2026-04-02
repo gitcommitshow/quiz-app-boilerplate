@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "npm run dev:api & npm run dev:frontend",
-    "dev:frontend": "vite",
+    "dev:frontend": "VITE_ALLOW_SKIP=true vite",
     "dev:api": "node server/api/index.js",
     "compile:questions": "node scripts/compile-questions.js",
     "test": "node --test test/",

@@ -7,6 +7,24 @@ function renderInline(marked, text) {
     return marked.parse(text);
 }
 
+/** True when VITE_ALLOW_SKIP is enabled at build time (string "true" or boolean). */
+function isViteAllowSkipEnabled() {
+    const v = import.meta.env.VITE_ALLOW_SKIP;
+    if (v === true) return true;
+    return String(v ?? '').trim().toLowerCase() === 'true';
+}
+
+/** Main quiz only: show Skip when deployment enables VITE_ALLOW_SKIP at build time. */
+function isAllowSkipMainQuiz(slugView, quiz, isCurrent) {
+    return (
+        isViteAllowSkipEnabled() &&
+        !slugView &&
+        Boolean(quiz) &&
+        !quiz.isQuizCompleted() &&
+        isCurrent
+    );
+}
+
 /** Escapes a string for use in a double-quoted HTML attribute. */
 function escapeAttr(s) {
     return String(s)
@@ -80,9 +98,13 @@ export function buildQuestionCardHTML(question, userAnswer, marked, options) {
             `;
 
     if (showSubmit) {
+        const showSkip = isAllowSkipMainQuiz(slugView, quiz, isCurrent);
         questionHtml += `
-                    <div class="d-flex justify-content-between align-items-center">
-                        <button class="btn btn-dark submit-btn" onclick="${submitFn}(${question.id})" id="submit-btn-${question.id}" disabled>Submit</button>
+                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                        <div class="d-flex gap-2 align-items-center flex-wrap">
+                            <button class="btn btn-dark submit-btn" onclick="${submitFn}(${question.id})" id="submit-btn-${question.id}" disabled>Submit</button>
+                            ${showSkip ? '<button type="button" class="btn btn-outline-secondary skip-btn" onclick="handleSkipQuestion()">Skip</button>' : ''}
+                        </div>
                         <div>
                             <button class="btn btn-sm btn-outline-dark hint-btn" onclick="${hintFn}(${question.id}, 0)">Hint 1</button>
                             <button class="btn btn-sm btn-outline-dark hint-btn" onclick="${hintFn}(${question.id}, 1)">Hint 2</button>

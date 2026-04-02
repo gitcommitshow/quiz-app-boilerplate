@@ -616,6 +616,31 @@
             }
         }
 
+        /** Advances past the current question without submitting (only when VITE_ALLOW_SKIP=true). */
+        async function handleSkipQuestion() {
+            const skippedId = quiz.getCurrentQuestion()?.id;
+            if (!quiz.skipCurrentQuestion()) {
+                return;
+            }
+            await renderQuiz();
+            if (skippedId != null) {
+                rudderAnalytics.track('question skipped', { question_id: skippedId });
+            }
+            if (quiz.isQuizCompleted()) {
+                const quizProgress = quiz.getQuizProgress();
+                rudderAnalytics.track('quiz completed', {
+                    quiz_score: quizProgress.overallScore,
+                    quiz_total_questions: quizProgress.totalQuestions,
+                    quiz_answered_questions: quizProgress.answeredQuestions,
+                    quiz_correct_answers: quizProgress.correctAnswers,
+                    quiz_hint_count: quizProgress.hintCount
+                });
+            }
+            setTimeout(() => {
+                mermaid.run({ querySelector: '.show .mermaid' });
+            }, 300);
+        }
+
         async function renderQuiz() {
             console.log('Rendering quiz');
             const quizContainer = document.getElementById('quiz-container');
@@ -839,6 +864,7 @@
         window.handleSubmit = handleSubmit;
         window.showHint = showHint;
         window.moveToNextQuestion = moveToNextQuestion;
+        window.handleSkipQuestion = handleSkipQuestion;
         window.handleRestartQuiz = handleRestartQuiz;
         window.handleFinishQuiz = handleFinishQuiz;
         window.toggleSubmitButton = toggleSubmitButton;

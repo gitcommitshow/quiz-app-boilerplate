@@ -1,23 +1,23 @@
 # Content Workflow (Questions) Specification
 
 **Status**: Draft  
-**Version**: 0.2  
-**Last updated**: 2026-03-27  
+**Version**: 0.3  
+**Last updated**: 2026-03-30  
 **Owners**: Repo admins/maintainers
 
 ## Problem statement
 
-We want community contributions to **content** to be reviewed safely and efficiently using a Git-based workflow (PRs), starting with **questions**. Reviewers must be able to validate UI rendering in the PR’s Vercel preview quickly via deep links.
+We want **content** changes to be reviewed safely and efficiently using a Git-based workflow (PRs), starting with **questions**. Reviewers must be able to validate UI rendering in the PR’s Vercel preview quickly via deep links.
 
 ## Goals
 
 - Establish a generalized, future-proof content layout (e.g. `content/questions`, `content/lessons`, etc.)
-- Contributors author questions in PR-friendly Markdown files
+- Authors add questions in PR-friendly Markdown files
 - Each question change results in small, reviewable diffs (file-per-question)
 - Repo admins approve by merging PRs
 - CI validates question correctness (schema + semantic rules) and compiles questions into a runtime-consumable artifact
 - CI provides reviewer-friendly Vercel preview links per changed question
--
+
 ## Future content types (out of scope details)
 
 We anticipate additional content types (e.g. lessons/blogs) with different frontmatter requirements. This spec does not define their schemas yet; it only defines the **directory convention** that enables adding new formats without reorganizing later.
@@ -34,11 +34,11 @@ Content types live under `content/<type>/...`. For **questions** (this spec), ea
 
 - `content/questions/<slug-or-name>.md`
 
-There is **no** separate `core` vs `community` tree; provenance and attribution (e.g. author fields in frontmatter, links to author bios—similar to blog posts) can be defined in a later revision of this spec.
+**Single layout**: every question lives in that tree and follows the same file format and compile rules. There is no alternate directory, pipeline, or schema for “maintainer” vs “community” questions. Optional provenance in frontmatter (e.g. author) may be added later without splitting trees.
 
 **Rule**: one file = one question.
 
-## Contributor file format (Questions: Markdown + frontmatter)
+## Question file format (Markdown + frontmatter)
 
 ### File type
 
@@ -76,7 +76,7 @@ Support expectations:
 
 ## Moderation model (Git PR-based)
 
-- Contributors submit by opening a PR that adds/updates files under `content/questions/**`.
+- Authors submit by opening a PR that adds/updates files under `content/questions/**`.
 - Repo admins approve by merging the PR into the main branch.
 - Merged questions become part of the compiled runtime question set.
 
