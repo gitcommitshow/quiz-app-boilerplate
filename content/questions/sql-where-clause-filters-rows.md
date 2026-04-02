@@ -2,7 +2,7 @@
 id: 1
 slug: sql-where-clause-filters-rows
 type: objective
-version: 11
+version: 12
 labels: []
 ---
 
