@@ -310,6 +310,30 @@ export class Quiz {
     }
 
     /**
+     * Skips the current question without recording an answer (main quiz only).
+     * Advances to the next question, or marks the quiz completed when skipping the last question.
+     * @returns {boolean} True if the quiz state changed (advanced or finished).
+     */
+    skipCurrentQuestion() {
+        if (this.isQuizCompleted() || this.questions.length === 0) {
+            return false;
+        }
+        const current = this.getCurrentQuestion();
+        if (!current) {
+            this.completeQuiz();
+            return true;
+        }
+        if (this.hasNextQuestion()) {
+            this.currentQuestionIndex++;
+            console.log(`Skipped question ${current.id}. Current index: ${this.currentQuestionIndex}`);
+            return true;
+        }
+        this.completeQuiz();
+        console.log(`Skipped last question ${current.id}; quiz marked completed`);
+        return true;
+    }
+
+    /**
      * Increments the hint count and updates local storage.
      * @returns {number} The new hint count.
      */

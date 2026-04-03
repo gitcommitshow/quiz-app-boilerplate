@@ -2,7 +2,7 @@
 id: 6
 slug: postgresql-json-age-extract
 type: subjective
-version: 3
+version: 4
 labels: []
 keywords:
   - SELECT
@@ -17,6 +17,14 @@ maxLength: 500
 ---
 
 Write a PostgreSQL query to extract the `name` field from a JSON column called `user_data` in a table named `users`, but only for records where the JSON contains a `age` field greater than 30.
+
+```mermaid
+flowchart LR
+    users[(users)]
+    users --> col["user_data JSON"]
+    col --> name["name"]
+    col --> age["age over 30"]
+```
 
 ## Expected answer
 

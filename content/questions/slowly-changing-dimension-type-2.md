@@ -2,7 +2,7 @@
 id: 9
 slug: slowly-changing-dimension-type-2
 type: objective
-version: 2
+version: 4
 labels: []
 ---
 
