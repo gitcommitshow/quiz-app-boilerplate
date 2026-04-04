@@ -8,7 +8,7 @@ import {
   buildContributorMarkdown,
   isValidSlug,
   markdownFilename,
-} from '../../lib/questionToMarkdown.js';
+} from '../lib/questionToMarkdown.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

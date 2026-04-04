@@ -3,7 +3,7 @@
  */
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { buildContributorMarkdown } from '../lib/questionToMarkdown.js';
+import { buildContributorMarkdown } from '../server/lib/questionToMarkdown.js';
 import { fileToQuestion } from '../scripts/compile-questions.js';
 
 test('buildContributorMarkdown objective round-trips through fileToQuestion', () => {
