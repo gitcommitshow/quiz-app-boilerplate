@@ -13,6 +13,7 @@
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.21.0",
-    "resilient-llm": "^1.0.0"
+    "resilient-llm": "^1.0.0",
+    "yaml": "^2.8.3"
   }
 }
